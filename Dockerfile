@@ -1,4 +1,5 @@
 
+
 #
 # docker build -t bbissell/llama-cpp-mkl:b3467
 #
@@ -32,4 +33,6 @@ VOLUME [ "/var/models" ]
 ## Run phase
 WORKDIR /home/llamauser/git/build/bin
 EXPOSE 8080
-CMD ["llama-server"]
+
+COPY lf.sh .
+CMD ./lf.sh

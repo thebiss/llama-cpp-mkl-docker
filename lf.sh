@@ -22,7 +22,7 @@ _MODEL_PARAMS="-m ${_MODELHOME}/${_GGUF}"
 
 ## Engine
 #
-_BIN="$HOME/dev-in-wsl/llama.cpp.git/build/bin/llama-server"
+_BIN="./llama-server"
 
 
 ## Engine Settings
