@@ -7,20 +7,31 @@ function _error
     exit -1
 }
 
+##
 ## MODELS
+##
+
 #
 _MODELHOME="/var/models"
+
+# Default model
 _GGUF="mistral-7b-instruct-v0.2.Q5_K_M.gguf"
 # _GGUF="Phi-3-mini-4k-instruct-q4.gguf"
 # _GGUF="Meta-Llama-3-8B-Instruct.Q5_K_M.gguf"
 
-# needs new encoder
+# Not working - needs new encoder
 # _GGUF="Mistral-Nemo-Instruct-2407-Q5_K_M.gguf"
+_GGUF=${LLAMA_MODEL_GGUF:-${_GGUF}}
+_GGUF_ABSOLUTE="${_MODELHOME}/${_GGUF}"
 
-_MODEL_PARAMS="-m ${_MODELHOME}/${_GGUF}"
+[ -f "${_GGUF_ABSOLUTE}" ] || _error "Cannot access file" "${_GGUF_ABSOLUTE}" "`ls -al ${_GGUF_ABSOLUTE}`"
+
+_MODEL_PARAMS="-m ${_GGUF_ABSOLUTE}"
 
 
+##
 ## Engine
+##
 #
 _BIN=${LLAMA_SERVER_BIN:-"/home/llamacpp/build/bin/llama-server"}
 
