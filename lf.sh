@@ -22,21 +22,21 @@ _MODEL_PARAMS="-m ${_MODELHOME}/${_GGUF}"
 
 ## Engine
 #
-_BIN="./llama-server"
+_BIN=${LLAMA_SERVER_BIN:-"/home/llamacpp/build/bin/llama-server"}
 
 
 ## Engine Settings
-#
 # _GPU_OFF="" # "--gpu DISABLE"
 # _THREADS="--threads 7"
-_PROC_PARAMS="--threads 7"
+#
+_PROC_PARAMS="--threads 7 --host 0.0.0.0 --port 8080"
 
 
 ## CONTEXT settings
-#
 _KEEP_ORIGINAL_PROMPT="--keep -1"
 _CONTEXT_FROM_MODEL="-c 0"
 _PREDICT_UNTIL_CONTEXT="-n -2"
+#
 _CONTEXT_PARAMS="${_KEEP_ORIGINAL_PROMPT} ${_CONTEXT_FROM_MODEL} ${PREDUCT_UNTIL_CONTEXT}"
 
 
