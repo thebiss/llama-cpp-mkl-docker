@@ -9,6 +9,3 @@ docker build \
     --build-arg LLAMACPP_VERSION_TAG=${LLAMACPP_VER} \
     --rm=false \
     .
-
-docker images
-
