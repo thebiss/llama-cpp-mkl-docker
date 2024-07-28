@@ -56,8 +56,8 @@ SAMPLING_PARAMS="--temp 0.7 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalt
 
 ## Main
 
-MKLROOT=${MKLROOT:-}
-[ -z "${MKLROOT}" ] && echo "Needs Intel MKL library env. Running: 'source /opt/intel/oneapi/setvars.sh'" && source /opt/intel/oneapi/setvars.sh
+SETVARS_COMPLETED=${SETVARS_COMPLETED:-}
+[ -z "${SETVARS_COMPLETED}" ] && echo "Needs Intel MKL library env. Running: 'source /opt/intel/oneapi/setvars.sh'" && source /opt/intel/oneapi/setvars.sh
 
 set -x
 ${_BIN} ${_PROC_PARAMS} ${_CONTEXT_PARAMS} ${SAMPLING_PARAMS} ${_MODEL_PARAMS}
