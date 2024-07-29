@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Default to b3467 if not specified
-LLAMACPP_VER=${LLAMACPP_VER:-b3467}
+LLAMACPP_VER=${LLAMACPP_VER:-b3472}
 
 docker build . \
     --file Dockerfile \
