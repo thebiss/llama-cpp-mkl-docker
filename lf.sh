@@ -21,6 +21,8 @@ _GGUF="mistral-7b-instruct-v0.2.Q5_K_M.gguf"
 
 # Not working - needs new encoder
 # _GGUF="Mistral-Nemo-Instruct-2407-Q5_K_M.gguf"
+
+
 _GGUF=${LLAMA_MODEL_GGUF:-${_GGUF}}
 _GGUF_ABSOLUTE="${_MODELHOME}/${_GGUF}"
 
@@ -46,18 +48,18 @@ _PROC_PARAMS="--threads 7 --host 0.0.0.0 --port 8080"
 ## CONTEXT settings
 _KEEP_ORIGINAL_PROMPT="--keep -1"
 _CONTEXT_FROM_MODEL="-c 0"
-_PREDICT_UNTIL_CONTEXT="-n -2"
+
+# --predict -2 seems to change to a default value
+_PREDICT_UNTIL_CONTEXT="--predict -1"
 #
-_CONTEXT_PARAMS="${_KEEP_ORIGINAL_PROMPT} ${_CONTEXT_FROM_MODEL} ${PREDUCT_UNTIL_CONTEXT}"
+_CONTEXT_PARAMS="${_KEEP_ORIGINAL_PROMPT} ${_CONTEXT_FROM_MODEL} ${_PREDICT_UNTIL_CONTEXT}"
 
 
 ## SAMPLING settings
 #
-# Too match llamafile defaults for comparison purposes...
-# _PREDICTIONS=400
-# _PENALIZE_REPEAT=1.18
+# @BUG: It appears the llama.cpp UI overrides these...
 #
-SAMPLING_PARAMS="--temp 0.7 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalty 256"
+SAMPLING_PARAMS="--temp 0.4 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalty 256"
 
 
 ## PROMPT
@@ -69,6 +71,17 @@ SAMPLING_PARAMS="--temp 0.7 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalt
 
 SETVARS_COMPLETED=${SETVARS_COMPLETED:-}
 [ -z "${SETVARS_COMPLETED}" ] && echo "Needs Intel MKL library env. Running: 'source /opt/intel/oneapi/setvars.sh'" && source /opt/intel/oneapi/setvars.sh
+
+# figlet -w 120 --metal '= LLAMA-SERVER ='
+printf '
+
+               m      m        mm   m    m   mm           mmmm  mmmmmm mmmmm  m    m mmmmmm mmmmm
+               #      #        ##   ##  ##   ##          #"   " #      #   "# "m  m" #      #   "#
+ mmmmmm        #      #       #  #  # ## #  #  #         "#mmm  #mmmmm #mmmm"  #  #  #mmmmm #mmmm"        mmmmmm
+ mmmmmm        #      #       #mm#  # "" #  #mm#   """       "# #      #   "m  "mm"  #      #   "m        mmmmmm
+               #mmmmm #mmmmm #    # #    # #    #        "mmm#" #mmmmm #    "   ##   #mmmmm #    "
+
+'
 
 set -x
 ${_BIN} ${_PROC_PARAMS} ${_CONTEXT_PARAMS} ${SAMPLING_PARAMS} ${_MODEL_PARAMS}
