@@ -1,7 +1,7 @@
 #! /bin/bash
 ##
 ##
-## Runs the containerized model using a specified model, or local default.
+## Runs the containerized llama-server using a specified or default model
 ##
 ##
 set -euo pipefail
@@ -52,7 +52,7 @@ _LLAMA_MODEL_GGUF_DIRNAME=$(dirname "$LLAMA_MODEL_GGUF")
 # Run the container
 set -x
 docker run \
-    -it \
+    --detach \
     --rm \
     --volume "${_LLAMA_MODEL_GGUF_DIRNAME}:/var/models:ro" \
     --publish 8080:8080 \
