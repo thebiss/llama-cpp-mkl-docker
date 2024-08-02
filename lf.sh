@@ -16,18 +16,10 @@ function _error
 #
 _MODELHOME="/var/models"
 
-# Default model
-_GGUF="mistral-7b-instruct-v0.2.Q5_K_M.gguf"
-# _GGUF="Phi-3-mini-4k-instruct-q4.gguf"
-# _GGUF="Meta-Llama-3-8B-Instruct.Q5_K_M.gguf"
+_GGUF=${LLAMA_MODEL_GGUF:-}
+[ -z "${_GGUF}" ] && _error 'Unknown model.  Set $LLAMA_MODEL_GGUF to model file name.'
 
-# Not working - needs new encoder
-# _GGUF="Mistral-Nemo-Instruct-2407-Q5_K_M.gguf"
-
-
-_GGUF=${LLAMA_MODEL_GGUF:-${_GGUF}}
 _GGUF_ABSOLUTE="${_MODELHOME}/${_GGUF}"
-
 [ -f "${_GGUF_ABSOLUTE}" ] || _error "Cannot access model file" "${_GGUF_ABSOLUTE}" "`ls -al ${_GGUF_ABSOLUTE}`"
 
 _MODEL_PARAMS="-m ${_GGUF_ABSOLUTE}"
@@ -70,10 +62,11 @@ SAMPLING_PARAMS="--temp 0.4 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalt
 ## Main
 
 SETVARS_COMPLETED=${SETVARS_COMPLETED:-}
-[ -z "${SETVARS_COMPLETED}" ] && echo "Needs Intel MKL library env. Running: 'source /opt/intel/oneapi/setvars.sh'" && source /opt/intel/oneapi/setvars.sh
+[ -z "${SETVARS_COMPLETED}" ] && _error "Needs Intel MKL library env. First run: 'source /opt/intel/oneapi/setvars.sh'"
 
 # figlet -w 120 --metal '= LLAMA-SERVER ='
 printf '
+
           ▗▖   ▗▖     ▄  ▗▄ ▄▖  ▄        ▗▄▖ ▗▄▄▄▖▗▄▄▖ ▗▖ ▗▖▗▄▄▄▖▗▄▄▖
           ▐▌   ▐▌    ▐█▌ ▐█ █▌ ▐█▌      ▗▛▀▜ ▐▛▀▀▘▐▛▀▜▌▝█ █▘▐▛▀▀▘▐▛▀▜▌
 ▗▄▄▄▖     ▐▌   ▐▌    ▐█▌ ▐███▌ ▐█▌      ▐▙   ▐▌   ▐▌ ▐▌ █ █ ▐▌   ▐▌ ▐▌     ▗▄▄▄▖
@@ -81,6 +74,7 @@ printf '
 ▗▄▄▄▖     ▐▌   ▐▌    ███ ▐▌▀▐▌ ███  ██▌    ▜▌▐▌   ▐▌▝█▖ ▐█▌ ▐▌   ▐▌▝█▖     ▗▄▄▄▖
 ▝▀▀▀▘     ▐▙▄▄▖▐▙▄▄▖▗█ █▖▐▌ ▐▌▗█ █▖     ▐▄▄▟▘▐▙▄▄▖▐▌ ▐▌ ▐█▌ ▐▙▄▄▖▐▌ ▐▌     ▝▀▀▀▘
           ▝▀▀▀▘▝▀▀▀▘▝▘ ▝▘▝▘ ▝▘▝▘ ▝▘      ▀▀▘ ▝▀▀▀▘▝▘ ▝▀ ▝▀▘ ▝▀▀▀▘▝▘ ▝▀
+
 '
 
 set -x
