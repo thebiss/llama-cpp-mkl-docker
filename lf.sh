@@ -35,9 +35,8 @@ _BIN=${LLAMA_SERVER_BIN:-""}
 
 ## Engine Settings
 # _GPU_OFF="" # "--gpu DISABLE"
-# _THREADS="--threads 7"
 #
-_PROC_PARAMS="--threads 7 --host 0.0.0.0 --port 8080"
+_PROC_PARAMS="--threads 8 --host 0.0.0.0 --port 8080"
 
 
 ## CONTEXT settings

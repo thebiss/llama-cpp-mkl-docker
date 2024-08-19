@@ -22,7 +22,8 @@ function _error
 ##
 ## Main
 ##
-_MODEL_DEFAULT="../models/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"
+# _MODEL_DEFAULT="../models/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"  # odd behavior
+_MODEL_DEFAULT="../models/mistral-7b-instruct-v0.2.Q5_K_M.gguf"
 _MODEL_MSG=""
 LLAMA_MODEL_GGUF=${LLAMA_MODEL_GGUF:-""}
 
