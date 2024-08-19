@@ -2,7 +2,7 @@
 # docker build -t bbissell/llama-cpp-mkl:b3467
 #
 
-ARG  ONEAPI_IMAGE_VER=2024.2.0-1-devel-ubuntu22.04
+ARG  ONEAPI_IMAGE_VER=2024.2.1-0-devel-ubuntu22.04
 
 ##
 ## Build Stage
