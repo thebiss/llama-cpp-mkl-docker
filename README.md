@@ -1,9 +1,13 @@
+Note: This is a learning exercise.  You probably want the [dockerfiles in
+the llama.cpp devops
+tools.](https://github.com/ggerganov/llama.cpp/tree/master/.devops)
+
 ## Build Containerized LLAMA.CPP for Intel CPUs with MKL, "From Scratch"
 
 Builds [llama.cpp](https://github.com/ggerganov/llama.cpp) using the [containerized Intel OneAPI MKL library](https://www.intel.com/content/www/us/en/developer/articles/technical/how-to-guide-for-docker-wsl-oneapi-workloads.html) for optimized operation on CPU-only machines. 
 
 
-Mistral achieves ~7 tokens/second on Intel Core(TM) i5-1135G7 @ 2.40GHz, with 32GB ram.
+Mistral achieves ~6.8 tokens/second on Intel Core(TM) i5-1135G7 @ 2.40GHz, with 32GB ram.
 
 ## Step 1: Build the container
 
