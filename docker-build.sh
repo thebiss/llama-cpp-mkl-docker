@@ -5,6 +5,8 @@
 # 19 Aug - try b3599
 LLAMACPP_VER=${LLAMACPP_VER:-b3599}
 
+cd ./docker
+
 docker build . \
     --file Dockerfile \
     --tag bbissell/llama-cpp-mkl:${LLAMACPP_VER} \
