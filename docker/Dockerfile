@@ -13,7 +13,12 @@ RUN useradd -m --uid 1010 llamauser
 USER 1010:1010
 WORKDIR /home/llamauser
 
-ARG LLAMACPP_VERSION_TAG=b3467
+ARG LLAMACPP_VERSION_TAG
+RUN if [ -z "$LLAMACPP_VERSION_TAG" ]; then \
+    echo "Error: arg LLAMACPP_VERSION_TAG must be set." && exit 1; \
+    fi
+
+
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 # Fetch from repo
@@ -51,4 +56,4 @@ VOLUME [ "/var/models" ]
 EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN
-CMD /home/llamauser/lf.sh
+CMD ["/bin/bash","/home/llamauser/lf.sh"]
