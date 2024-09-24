@@ -22,24 +22,19 @@ function _error
 ##
 ## Main
 ##
-_MODEL_DEFAULT="../models/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"
-# _MODEL_DEFAULT="../models/mistral-7b-instruct-v0.2.Q5_K_M.gguf"
-_MODEL_MSG=""
 
 # Use model in param 1, if set
 [ $# -gt 0 ] && LLAMA_MODEL_GGUF=$1
-
 LLAMA_MODEL_GGUF=${LLAMA_MODEL_GGUF:-""}
 
 # if still unset, use the default
 if [ -z "${LLAMA_MODEL_GGUF}" ]; then
+    _MODEL_DEFAULT="../models/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"
     LLAMA_MODEL_GGUF="${_MODEL_DEFAULT}"
-    _MODEL_MSG="WARNING: Model not set, using default. Run \"${_THIS} /path/to/model.gguf\" to override."
+    echo "WARNING: Model not set, using default. Run \"${_THIS} /path/to/model.gguf\" to override."
 fi
 
 LLAMA_MODEL_GGUF=$(realpath ${LLAMA_MODEL_GGUF})
-
-echo "${_MODEL_MSG}"
 echo "Using model ${LLAMA_MODEL_GGUF}"
 
 # Validate existence of absolute path
@@ -65,3 +60,10 @@ docker run \
     --env "LLAMA_ARG_CTX_SIZE" \
     --name "llama-cpp-mkl-optimized" \
     bbissell/llama-cpp-mkl:latest
+set +x
+
+# On ubuntu on WSL, open a browser
+[ $(which sensible-browser) ] && sensible-browser http://localhost:8080
+
+
+
