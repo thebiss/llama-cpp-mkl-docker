@@ -2,9 +2,10 @@
 
 # Default to b3467 if not specified
 # 19 Aug - bump to b3486 for Ollama, which includes issue #8688
-# 19 Aug - try b3599
+# 19 Aug    - try b3599
 # 13 Sept - try 3751
-LLAMACPP_VER=${LLAMACPP_VER:-b3751}
+# 23 Sept - try b3812
+LLAMACPP_VER=${LLAMACPP_VER:-b3812}
 
 cd ./docker
 
