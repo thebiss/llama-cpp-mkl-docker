@@ -30,7 +30,8 @@ WORKDIR git
 RUN cmake -B build -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=Intel10_64lp -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_NATIVE=ON
 
 # make only the server target
-RUN cmake --build build --config Release --target llama-server
+# 23 Sept - run parallel
+RUN cmake --build build --config Release --target llama-server -j
 
 # cleanup ahead of the runtime copy
 RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
