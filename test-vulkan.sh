@@ -3,6 +3,9 @@
 
 # Tips from: https://github.com/microsoft/wslg/issues/531
 # and https://github.com/jnewb1/vgpu-docker-wslg-testing 
+# and https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md
+# and see here that GPUs in LUNUX contaners are not supported:
+#    https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/gpu-acceleration#hyper-v-isolated-linux-container-support
 
 # Lessons learned
 # - must passthrough the directx device - don't need the dri's 
@@ -12,11 +15,14 @@
 
 docker run -it \
     --device=/dev/dxg \
+    --device=/dev/dri/card0 \
+    --device=/dev/dri/renderD128 \
     --group-add video \
     -e DISPLAY \
     -e WAYLAND_DISPLAY \
     -e XDG_RUNTIME_DIR \
     -e LD_LIBRARY_PATH=/usr/lib/wsl/lib \
+    -e LIBVA_DRIVER_NAME=d3d12 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /mnt/wslg:/mnt/wslg \
     -v /usr/lib/wsl:/usr/lib/wsl \
