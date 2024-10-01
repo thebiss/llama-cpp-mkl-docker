@@ -9,6 +9,12 @@ function _error
     exit -1
 }
 
+function _warn
+{
+    [ $# -gt 0 ] && echo "WARNING: ${@:1}" && echo ""    
+}
+
+
 ##
 ## MODELS
 ##
@@ -60,7 +66,7 @@ SAMPLING_PARAMS="--temp 0.4 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalt
 ## Main
 
 SETVARS_COMPLETED=${SETVARS_COMPLETED:-}
-[ -z "${SETVARS_COMPLETED}" ] && _error "Needs Intel MKL library env. First run: 'source /opt/intel/oneapi/setvars.sh'"
+[ -z "${SETVARS_COMPLETED}" ] && _warn "Needs Intel MKL library env. First run: 'source /opt/intel/oneapi/setvars.sh'"
 
 # figlet -w 120 --metal '= LLAMA-SERVER ='
 printf '
