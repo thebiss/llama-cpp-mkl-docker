@@ -109,7 +109,7 @@ WORKDIR /home/llamauser
 
 COPY --from=build /home/llamauser/git ./git
 
-COPY lf.sh .
+COPY lf.sh gpuinfo.sh ./
 ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
 
 ## Run phase
