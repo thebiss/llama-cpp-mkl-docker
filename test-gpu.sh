@@ -11,11 +11,14 @@
 
 docker run -it \
     --device=/dev/dxg \
+    --device=/dev/dri/card0 \
+    --device=/dev/dri/renderD128 \
     --group-add video \
     -e DISPLAY \
     -e WAYLAND_DISPLAY \
     -e XDG_RUNTIME_DIR \
     -e LD_LIBRARY_PATH=/usr/lib/wsl/lib \
+    -e LIBVA_DRIVER_NAME=d3d12 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /mnt/wslg:/mnt/wslg \
     -v /usr/lib/wsl:/usr/lib/wsl \
