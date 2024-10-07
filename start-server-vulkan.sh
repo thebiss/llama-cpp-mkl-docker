@@ -29,7 +29,11 @@ LLAMA_MODEL_GGUF=${LLAMA_MODEL_GGUF:-""}
 
 # if still unset, use the default
 if [ -z "${LLAMA_MODEL_GGUF}" ]; then
-    _MODEL_DEFAULT="../models/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"
+
+    ## Note this server defaults to a 3.2GB smaller model
+    _MODEL_DEFAULT="../models/llama-3.2-3b-instruct-q8_0.gguf"
+    ## force limit the context size
+    LLAMA_ARG_CTX_SIZE=4096
     LLAMA_MODEL_GGUF="${_MODEL_DEFAULT}"
     echo "WARNING: Model not set, using default. Run \"${_THIS} /path/to/model.gguf\" to override."
 fi
@@ -55,10 +59,19 @@ docker run \
     -it \
     --rm \
     --device=/dev/dxg \
+    --device=/dev/dri/card0 \
+    --device=/dev/dri/renderD128 \
     --group-add video \
     -e DISPLAY \
     -e WAYLAND_DISPLAY \
     -e XDG_RUNTIME_DIR \
+    -e LD_LIBRARY_PATH=/usr/lib/wsl/lib \
+    -e LIBVA_DRIVER_NAME=d3d12 \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    -v /mnt/wslg:/mnt/wslg \
+    -v /usr/lib/wsl:/usr/lib/wsl \
+    -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \
+    \
     --volume "${_LLAMA_MODEL_GGUF_DIRNAME}:/var/models:ro" \
     --publish 8080:8080 \
     --env "LLAMA_MODEL_GGUF=${_LLAMA_MODEL_GGUF_FILEONLY}" \
@@ -69,6 +82,4 @@ set +x
 
 # On ubuntu on WSL, open a browser
 [ $(which sensible-browser) ] && sensible-browser http://localhost:8080
-
-
 
