@@ -5,7 +5,8 @@
 # 19 Aug    - try b3599
 # 13 Sept - try 3751
 # 23 Sept - try b3812
-LLAMACPP_VER=${LLAMACPP_VER:-b3812}
+# 24 Oct - try b3974 - better server prompt handling + more
+LLAMACPP_VER=${LLAMACPP_VER:-b3974}
 
 cd ./docker
 
