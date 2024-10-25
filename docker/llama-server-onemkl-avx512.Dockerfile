@@ -23,7 +23,7 @@ ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 # Fetch from repo
 ADD --chown=1010:1010 --keep-git-dir=true https://github.com/ggerganov/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
-WORKDIR git
+WORKDIR /home/llamauser/git
 
 # You can skip this step if  in oneapi-basekit docker image, only required for manual installation
 # source /opt/intel/oneapi/setvars.sh 
