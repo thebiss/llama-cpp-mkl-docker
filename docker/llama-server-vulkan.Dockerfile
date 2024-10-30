@@ -87,7 +87,7 @@ RUN cmake -B build -DGGML_VULKAN=1 -DLLAMA_CURL=1 && \
 # FROM same image - no new image
 WORKDIR /home/llamauser
 
-COPY lf.sh gpuinfo.sh ./
+COPY llama-server-start.sh gpuinfo.sh ./
 ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
 
 ## Run phase
@@ -97,7 +97,7 @@ VOLUME [ "/var/models" ]
 EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN
-CMD ["/bin/bash","/home/llamauser/lf.sh"]
+CMD ["/bin/bash","/home/llamauser/llama-server-start.sh"]
 
 
 # ENV LC_ALL=C.utf8

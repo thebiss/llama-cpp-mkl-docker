@@ -109,7 +109,7 @@ WORKDIR /home/llamauser
 
 COPY --from=build /home/llamauser/git ./git
 
-COPY lf.sh gpuinfo.sh ./
+COPY llama-server-start.sh gpuinfo.sh ./
 ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
 
 ## Run phase
@@ -119,4 +119,4 @@ VOLUME [ "/var/models" ]
 EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN
-CMD ["/bin/bash","/home/llamauser/lf.sh"]
+CMD ["/bin/bash","/home/llamauser/llama-server-start.sh"]
