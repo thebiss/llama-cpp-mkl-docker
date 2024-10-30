@@ -23,35 +23,38 @@ function _error
 ## Main
 ##
 
+# load defaults
+source ./settings.sh
+
 # Use model in param 1, if set
 [ $# -gt 0 ] && LLAMA_MODEL_GGUF=$1
 LLAMA_MODEL_GGUF=${LLAMA_MODEL_GGUF:-""}
 
 # if still unset, use the default
 if [ -z "${LLAMA_MODEL_GGUF}" ]; then
-
-    ## Note this server defaults to a 3.2GB smaller model
-    _MODEL_DEFAULT="../models/llama-3.2-3b-instruct-q8_0.gguf"
-    ## force limit the context size
-    LLAMA_ARG_CTX_SIZE=4096
     LLAMA_MODEL_GGUF="${_MODEL_DEFAULT}"
     echo "WARNING: Model not set, using default. Run \"${_THIS} /path/to/model.gguf\" to override."
+    echo ""
 fi
 
-LLAMA_MODEL_GGUF=$(realpath ${LLAMA_MODEL_GGUF})
-echo "Using model ${LLAMA_MODEL_GGUF}"
 
 # Validate existence of absolute path
+LLAMA_MODEL_GGUF=$(realpath ${LLAMA_MODEL_GGUF})
 [ -f "${LLAMA_MODEL_GGUF}" ] || _error "Cannot access model file:" "${LLAMA_MODEL_GGUF}"
-
 
 # Parts, for mounting
 _LLAMA_MODEL_GGUF_FILEONLY=$(basename "${LLAMA_MODEL_GGUF}")
 _LLAMA_MODEL_GGUF_DIRNAME=$(dirname "${LLAMA_MODEL_GGUF}")
 
+echo "Using model ${_LLAMA_MODEL_GGUF_FILEONLY}"
+[ -n "`which figlet`"  ] && figlet -w 120 -k "${_LLAMA_MODEL_GGUF_FILEONLY}"
+
 # Warn - passing context size specs
 LLAMA_ARG_CTX_SIZE=${LLAMA_ARG_CTX_SIZE:-""}
 [ -n "${LLAMA_ARG_CTX_SIZE}" ] && echo "Using context size limit from LLAMA_ARG_CTX_SIZE, ${LLAMA_ARG_CTX_SIZE}"
+
+## force limit the context size on vulkan
+LLAMA_ARG_CTX_SIZE=4096
 
 # Run the container
 set -x

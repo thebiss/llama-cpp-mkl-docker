@@ -23,27 +23,34 @@ function _error
 ## Main
 ##
 
+# load defaults
+source ./settings.sh
+
+# clear wsl FS buffer; will crash WSL when full
+./cleanup-wsl-cache.sh
+
 # Use model in param 1, if set
 [ $# -gt 0 ] && LLAMA_MODEL_GGUF=$1
 LLAMA_MODEL_GGUF=${LLAMA_MODEL_GGUF:-""}
 
 # if still unset, use the default
 if [ -z "${LLAMA_MODEL_GGUF}" ]; then
-    _MODEL_DEFAULT="../models/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"
     LLAMA_MODEL_GGUF="${_MODEL_DEFAULT}"
     echo "WARNING: Model not set, using default. Run \"${_THIS} /path/to/model.gguf\" to override."
+    echo ""
 fi
 
-LLAMA_MODEL_GGUF=$(realpath ${LLAMA_MODEL_GGUF})
-echo "Using model ${LLAMA_MODEL_GGUF}"
 
 # Validate existence of absolute path
+LLAMA_MODEL_GGUF=$(realpath ${LLAMA_MODEL_GGUF})
 [ -f "${LLAMA_MODEL_GGUF}" ] || _error "Cannot access model file:" "${LLAMA_MODEL_GGUF}"
-
 
 # Parts, for mounting
 _LLAMA_MODEL_GGUF_FILEONLY=$(basename "${LLAMA_MODEL_GGUF}")
 _LLAMA_MODEL_GGUF_DIRNAME=$(dirname "${LLAMA_MODEL_GGUF}")
+
+echo "Using model ${_LLAMA_MODEL_GGUF_FILEONLY}"
+[ -n "`which figlet`"  ] && figlet -w 120 -k --metal "${_LLAMA_MODEL_GGUF_FILEONLY}"
 
 # Warn - passing context size specs
 LLAMA_ARG_CTX_SIZE=${LLAMA_ARG_CTX_SIZE:-""}
@@ -64,6 +71,4 @@ set +x
 
 # On ubuntu on WSL, open a browser
 [ $(which sensible-browser) ] && sensible-browser http://localhost:8080
-
-
 
