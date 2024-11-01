@@ -40,8 +40,6 @@ _BIN=${LLAMA_SERVER_BIN:-""}
 
 
 ## Engine Settings
-# _GPU_OFF="" # "--gpu DISABLE"
-#
 _PROC_PARAMS="--threads 8 --host 0.0.0.0 --port 8080"
 
 
@@ -62,24 +60,15 @@ _SAMPLING_PARAMS="--temp 0.4 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penal
 # not supported by server?
 # _PROMPT="This is a conversation between User and Llama, a friendly chatbot. Llama is helpful, accurate, correct, clear, and concise.  Llama does not add extra phrases to be polite."
 
+##
+## MAIN
+##
 
-## Main
+# Redundant. builds based upon intel oneapi base set this on startup; others can't set these
+# SETVARS_COMPLETED=${SETVARS_COMPLETED:-}
+# [ -z "${SETVARS_COMPLETED}" ] && _warn "Needs Intel MKL library env. First run: 'source /opt/intel/oneapi/setvars.sh'"
 
-SETVARS_COMPLETED=${SETVARS_COMPLETED:-}
-[ -z "${SETVARS_COMPLETED}" ] && _warn "Needs Intel MKL library env. First run: 'source /opt/intel/oneapi/setvars.sh'"
-
-# figlet -w 120 --metal '= LLAMA-SERVER ='
-printf '
-
-          ▗▖   ▗▖     ▄  ▗▄ ▄▖  ▄        ▗▄▖ ▗▄▄▄▖▗▄▄▖ ▗▖ ▗▖▗▄▄▄▖▗▄▄▖
-          ▐▌   ▐▌    ▐█▌ ▐█ █▌ ▐█▌      ▗▛▀▜ ▐▛▀▀▘▐▛▀▜▌▝█ █▘▐▛▀▀▘▐▛▀▜▌
-▗▄▄▄▖     ▐▌   ▐▌    ▐█▌ ▐███▌ ▐█▌      ▐▙   ▐▌   ▐▌ ▐▌ █ █ ▐▌   ▐▌ ▐▌     ▗▄▄▄▖
-▝▀▀▀▘     ▐▌   ▐▌    █ █ ▐▌█▐▌ █ █       ▜█▙ ▐███ ▐███  █ █ ▐███ ▐███      ▝▀▀▀▘
-▗▄▄▄▖     ▐▌   ▐▌    ███ ▐▌▀▐▌ ███  ██▌    ▜▌▐▌   ▐▌▝█▖ ▐█▌ ▐▌   ▐▌▝█▖     ▗▄▄▄▖
-▝▀▀▀▘     ▐▙▄▄▖▐▙▄▄▖▗█ █▖▐▌ ▐▌▗█ █▖     ▐▄▄▟▘▐▙▄▄▖▐▌ ▐▌ ▐█▌ ▐▙▄▄▖▐▌ ▐▌     ▝▀▀▀▘
-          ▝▀▀▀▘▝▀▀▀▘▝▘ ▝▘▝▘ ▝▘▝▘ ▝▘      ▀▀▘ ▝▀▀▀▘▝▘ ▝▀ ▝▀▘ ▝▀▀▀▘▝▘ ▝▀
-
-'
+[ -n "`which figlet`"  ] && figlet -w 120 "=> LLAMA-SERVER ${LLAMACPP_VERSION}"
 
 set -x
 ${_BIN} ${_PROC_PARAMS} ${_CONTEXT_PARAMS} ${_SAMPLING_PARAMS} ${LLAMA_SERVER_EXTRA_OPTIONS:-} ${_MODEL_PARAMS}

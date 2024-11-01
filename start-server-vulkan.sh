@@ -50,7 +50,7 @@ _LLAMA_MODEL_GGUF_FILEONLY=$(basename "${LLAMA_MODEL_GGUF}")
 _LLAMA_MODEL_GGUF_DIRNAME=$(dirname "${LLAMA_MODEL_GGUF}")
 
 echo "Using model ${_LLAMA_MODEL_GGUF_FILEONLY}"
-[ -n "`which figlet`"  ] && figlet -w 120 --metal "${_LLAMA_MODEL_GGUF_FILEONLY}"
+[ -n "`which figlet`"  ] && figlet -w 120 "${_LLAMA_MODEL_GGUF_FILEONLY}"
 
 # Warn - passing context size specs
 LLAMA_ARG_CTX_SIZE=${LLAMA_ARG_CTX_SIZE:-""}
