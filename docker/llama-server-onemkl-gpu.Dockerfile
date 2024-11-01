@@ -111,6 +111,7 @@ COPY --from=build /home/llamauser/git ./git
 
 COPY llama-server-start.sh gpuinfo.sh ./
 ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
+ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
 
 ## Run phase
 

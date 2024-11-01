@@ -89,6 +89,7 @@ WORKDIR /home/llamauser
 
 COPY llama-server-start.sh gpuinfo.sh ./
 ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
+ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
 
 ## Run phase
 
@@ -98,12 +99,3 @@ EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN
 CMD ["/bin/bash","/home/llamauser/llama-server-start.sh"]
-
-
-# ENV LC_ALL=C.utf8
-# # Must be set to 0.0.0.0 so it can listen to requests from host machine
-# ENV LLAMA_ARG_HOST=0.0.0.0
-
-# HEALTHCHECK CMD [ "curl", "-f", "http://localhost:8080/health" ]
-
-# ENTRYPOINT [ "/llama-server" ]

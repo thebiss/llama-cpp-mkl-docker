@@ -55,7 +55,7 @@ _CONTEXT_PARAMS="${_KEEP_ORIGINAL_PROMPT} ${_PREDICT_UNTIL_CONTEXT}"
 ## SAMPLING settings
 
 # @BUG: It appears the llama.cpp UI overrides context and sampling settings...
-SAMPLING_PARAMS="--temp 0.4 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalty 256"
+_SAMPLING_PARAMS="--temp 0.4 --top-k 40 --top-p 0.95 --min-p 0.05 --repeat-penalty 256"
 
 
 ## PROMPT
@@ -82,5 +82,5 @@ printf '
 '
 
 set -x
-${_BIN} ${_PROC_PARAMS} ${_CONTEXT_PARAMS} ${SAMPLING_PARAMS} ${_MODEL_PARAMS}
+${_BIN} ${_PROC_PARAMS} ${_CONTEXT_PARAMS} ${_SAMPLING_PARAMS} ${LLAMA_SERVER_EXTRA_OPTIONS:-} ${_MODEL_PARAMS}
 
