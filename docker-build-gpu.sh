@@ -20,3 +20,5 @@ docker build . \
     --tag bbissell/llama-cpp-mkl-gpu:latest \
     --build-arg LLAMACPP_VERSION_TAG=${LLAMACPP_VER} \
     --rm=false
+
+./cleanup-wsl-cache.sh
