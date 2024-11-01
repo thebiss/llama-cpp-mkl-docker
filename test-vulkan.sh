@@ -13,25 +13,30 @@
 # - don't need  --device=/dev/dri/card0 \
 # - don't need  --device=/dev/dri/renderD128 \
 
-docker run -it \
+# free buffers
+./cleanup-wsl-cache.sh
+
+MODELDIR="$(realpath ../models)"
+
+# Run the container
+set -x
+docker run -it --rm \
     --device=/dev/dxg \
     --device=/dev/dri/card0 \
     --device=/dev/dri/renderD128 \
     --group-add video \
-    -e DISPLAY \
-    -e WAYLAND_DISPLAY \
-    -e XDG_RUNTIME_DIR \
-    -e LD_LIBRARY_PATH=/usr/lib/wsl/lib \
-    -e LIBVA_DRIVER_NAME=d3d12 \
+    --env DISPLAY \
+    --env WAYLAND_DISPLAY \
+    --env XDG_RUNTIME_DIR \
+    --env LD_LIBRARY_PATH=/usr/lib/wsl/lib \
+    --env LIBVA_DRIVER_NAME=d3d12 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /mnt/wslg:/mnt/wslg \
     -v /usr/lib/wsl:/usr/lib/wsl \
     -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \
-    bbissell/llama-cpp-vulkan:latest /bin/bash
-    
+    --volume "${MODELDIR}:/var/models:ro" \
+    --name "test-llamacpp-vulkan" \
+    bbissell/llama-cpp-vulkan:latest \
+    /bin/bash
 
 exit 0;
-
-#    
-# --group-add 118 \
-

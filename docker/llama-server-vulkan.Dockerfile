@@ -74,7 +74,7 @@ WORKDIR git
 # WORKDIR /app
 # COPY . .
 RUN cmake -B build -DGGML_VULKAN=1 -DLLAMA_CURL=1 && \
-    cmake --build build --config Release --target llama-server -j 6
+    cmake --build build --config Release --target llama-server --target llama-gguf --target llama-bench -j 6
 
 # Clean up
 
@@ -87,7 +87,7 @@ RUN cmake -B build -DGGML_VULKAN=1 -DLLAMA_CURL=1 && \
 # FROM same image - no new image
 WORKDIR /home/llamauser
 
-COPY llama-server-start.sh gpuinfo.sh ./
+COPY --chown=llamauser:llamauser ./src/* ./
 ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
 ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
 

@@ -31,7 +31,7 @@ RUN cmake -B build -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=Intel10_64lp -DCMAKE_C_COMP
 
 # make only the server target
 # 23 Sept - run parallel
-RUN cmake --build build --config Release --target llama-server --target llama-gguf -j 4
+RUN cmake --build build --config Release --target llama-server --target llama-gguf --target llama-bench -j 4
 
 # cleanup ahead of the runtime copy
 RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
@@ -47,7 +47,7 @@ WORKDIR /home/llamauser
 
 COPY --from=build /home/llamauser/git ./git
 
-COPY llama-server-start.sh gpuinfo.sh ./
+COPY --chown=llamauser:llamauser ./src/* ./
 ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
 
 ## Run phase
