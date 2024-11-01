@@ -68,3 +68,26 @@ terminate called after throwing an instance of 'vk::OutOfDeviceMemoryError'
 #  docker build -t bbissell/llama-cpp-mkl:b3467
 
 docker run -v $HOME/dev-in-wsl/models:/var/models -p 127.0.0.1:8080:8080 bbissell/llama-cpp-mkl:b3467 
+
+
+``` > [6/9] RUN apt update -y:
+0.430
+0.430 WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+0.430
+0.525 Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+0.656 Hit:2 http://archive.ubuntu.com/ubuntu jammy InRelease
+0.687 Get:3 https://packages.lunarg.com/vulkan jammy InRelease
+0.729 Hit:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+0.809 Hit:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+0.821 Err:3 https://packages.lunarg.com/vulkan jammy InRelease
+0.821   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY AA8452080E383F7E
+0.869 Hit:6 https://ppa.launchpadcontent.net/kisak/kisak-mesa/ubuntu jammy InRelease
+1.024 Reading package lists...
+1.692 W: http://security.ubuntu.com/ubuntu/dists/jammy-security/InRelease: The key(s) in the keyring /etc/apt/trusted.gpg.d/lunarg-signing-key-pub.asc are ignored as the file is not readable by user '_apt' executing apt-key.
+1.692 W: http://archive.ubuntu.com/ubuntu/dists/jammy/InRelease: The key(s) in the keyring /etc/apt/trusted.gpg.d/lunarg-signing-key-pub.asc are ignored as the file is not readable by user '_apt' executing apt-key.
+1.692 W: https://packages.lunarg.com/vulkan/dists/jammy/InRelease: The key(s) in the keyring /etc/apt/trusted.gpg.d/lunarg-signing-key-pub.asc are ignored as the file is not readable by user '_apt' executing apt-key.
+1.692 W: GPG error: https://packages.lunarg.com/vulkan jammy InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY AA8452080E383F7E
+1.692 E: The repository 'https://packages.lunarg.com/vulkan jammy InRelease' is not signed.
+1.692 W: http://archive.ubuntu.com/ubuntu/dists/jammy-updates/InRelease: The key(s) in the keyring /etc/apt/trusted.gpg.d/lunarg-signing-key-pub.asc are ignored as the file is not readable by user '_apt' executing apt-key.
+1.692 W: http://archive.ubuntu.com/ubuntu/dists/jammy-backports/InRelease: The key(s) in the keyring /etc/apt/trusted.gpg.d/lunarg-signing-key-pub.asc are ignored as the file is not readable by user '_apt' executing apt-key.
+1.692 W: https://ppa.launchpadcontent.net/kisak/kisak-mesa/ubuntu/dists/jammy/InRelease: The key(s) in the keyring /etc/apt/trusted.gpg.d/lunarg-signing-key-pub.asc are ignored as the file is not readable by user '_apt' executing apt-key.```

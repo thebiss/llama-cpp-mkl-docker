@@ -21,4 +21,4 @@ docker build . \
     --build-arg LLAMACPP_VERSION_TAG=${LLAMACPP_VER} \
     --rm=false
 
-./cleanup-wsl-cache.sh
+../cleanup-wsl-cache.sh
