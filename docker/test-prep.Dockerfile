@@ -9,10 +9,17 @@ ARG UBUNTU_VERSION=jammy
 ##
 FROM ubuntu:$UBUNTU_VERSION AS build
 
+# Update Ubuntu base to let APT cache data!
+# subsequent lines will use the apt cache volume
+# thanks to: https://stackoverflow.com/questions/24372792/how-to-preserve-apt-cache-archive-directory-when-using-docker-host-volumes
+RUN rm -f /etc/apt/apt.conf.d/docker-clean
+RUN touch /var/touchedfile
 
 # Install build tools
 # add software-properties-common for add-apt-respository
-RUN apt update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt update -y && \
     apt install -y \
     software-properties-common
 
@@ -22,19 +29,27 @@ ADD --chmod=644 https://packages.lunarg.com/lunarg-signing-key-pub.asc /etc/apt/
 
 # Add source for Update MESA using the PPA to fix driver issue
 # https://github.com/microsoft/wslg/issues/40#issuecomment-2037539322
-RUN add-apt-repository ppa:kisak/kisak-mesa 
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    add-apt-repository ppa:kisak/kisak-mesa 
 
 # Update indexes, upgrade drivers
-RUN apt update -y 
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt update -y 
 
 # Install build tools
-RUN apt install -y \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt install -y \
         git \
         build-essential \
         cmake 
 
 # Install Vulkan SDK and CURL 
-RUN apt-get install -y \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get install -y \
         vulkan-sdk \
         libcurl4-openssl-dev \
         curl \
@@ -43,7 +58,9 @@ RUN apt-get install -y \
         mesa-utils
 
 # Install diagnostic utils
-RUN apt-get install -y \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get install -y \
         clinfo \
         strace \
         vainfo \
