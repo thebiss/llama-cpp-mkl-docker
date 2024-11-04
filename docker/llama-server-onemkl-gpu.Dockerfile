@@ -31,7 +31,7 @@ RUN cmake -B build -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=Intel10_64lp -DCMAKE_C_COMP
 
 # make only the server target
 # 23 Sept - run parallel
-RUN cmake --build build --config Release --target llama-server --target llama-gguf --target llama-bench -j
+RUN cmake --build build --config Release --target llama-server --target llama-gguf --target llama-bench -j 6
 
 # cleanup ahead of the runtime copy
 RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
