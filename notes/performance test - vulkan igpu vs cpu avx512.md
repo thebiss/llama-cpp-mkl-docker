@@ -130,3 +130,32 @@ Vulkan0: Microsoft Direct3D12 (Intel(R) Iris(R) Xe Graphics) (Dozen) | uma: 1 | 
 build: 8f275a7 (1)
 llamauser@66f96b5ed32a:~$
 ```
+
+# CPU Thread increases
+## 4 threads (default)
+```
+ ./test-cpu.sh
+1
++ docker run -it --rm --name test-llama-cpp-intelmkl --volume /home/bbissell/dev-in-wsl/models:/var/models:ro bbissell/llama-cpp-mkl:latest /bin/bash
+llamauser@498d40168967:~$ ./llama-bench-granite-a400m.sh
+Additional parameters from $LLAMA_BENCH_OPTS:
+| model                          |       size |     params | backend    | threads |          test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | ------------: | -------------------: |
+| granitemoe ?B Q8_0             |   1.37 GiB |     1.38 B | BLAS       |       4 |          pp10 |       140.92 ± 22.27 |
+| granitemoe ?B Q8_0             |   1.37 GiB |     1.38 B | BLAS       |       4 |          tg10 |         64.13 ± 2.73 |
+
+build: 8f275a7 (1)
+```
+
+## 8 threads (4 cores x 2 threads per core) - FASTEST
+```
+llamauser@498d40168967:~$ LLAMA_BENCH_OPTS="-t 8" ./llama-bench-granite-a400m.sh
+Additional parameters from $LLAMA_BENCH_OPTS: -t 8
+| model                          |       size |     params | backend    | threads |          test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | ------------: | -------------------: |
+| granitemoe ?B Q8_0             |   1.37 GiB |     1.38 B | BLAS       |       8 |          pp10 |       171.60 ± 40.16 |
+| granitemoe ?B Q8_0             |   1.37 GiB |     1.38 B | BLAS       |       8 |          tg10 |         64.94 ± 8.09 |
+
+build: 8f275a7 (1)
+llamauser@498d40168967:~$
+```
