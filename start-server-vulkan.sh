@@ -59,6 +59,9 @@ LLAMA_ARG_CTX_SIZE=${LLAMA_ARG_CTX_SIZE:-""}
 ## force limit the context size on vulkan
 LLAMA_ARG_CTX_SIZE=4096
 
+# On ubuntu on WSL, open a browser
+[ $(which sensible-browser) ] && sensible-browser http://localhost:8080
+
 # Run the container
 set -x
 docker run \
@@ -86,6 +89,4 @@ docker run \
     bbissell/llama-cpp-vulkan:latest
 set +x
 
-# On ubuntu on WSL, open a browser
-[ $(which sensible-browser) ] && sensible-browser http://localhost:8080
 

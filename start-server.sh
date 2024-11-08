@@ -56,10 +56,13 @@ echo "Using model ${_LLAMA_MODEL_GGUF_FILEONLY}"
 LLAMA_ARG_CTX_SIZE=${LLAMA_ARG_CTX_SIZE:-""}
 [ -n "${LLAMA_ARG_CTX_SIZE}" ] && echo "Using context size limit from LLAMA_ARG_CTX_SIZE, ${LLAMA_ARG_CTX_SIZE}"
 
+# On ubuntu on WSL, open a browser
+[ $(which sensible-browser) ] && sensible-browser http://localhost:8080
+
 # Run the container
 set -x
 docker run \
-    --detach \
+    -it \
     --rm \
     --volume "${_LLAMA_MODEL_GGUF_DIRNAME}:/var/models:ro" \
     --publish 8080:8080 \
@@ -68,7 +71,3 @@ docker run \
     --name "llama-cpp-mkl-optimized" \
     bbissell/llama-cpp-mkl:latest
 set +x
-
-# On ubuntu on WSL, open a browser
-[ $(which sensible-browser) ] && sensible-browser http://localhost:8080
-
