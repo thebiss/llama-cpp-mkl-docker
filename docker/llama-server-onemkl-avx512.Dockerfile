@@ -1,6 +1,6 @@
-#
-# docker build -t bbissell/llama-cpp-mkl:b3467
-#
+##
+## Build a llama.cpp instance that uses Intel One MKL CPU acceleration
+##
 
 ARG  ONEAPI_IMAGE_VER=2024.2.1-0-devel-ubuntu22.04
 
@@ -29,8 +29,6 @@ WORKDIR /home/llamauser/git
 # source /opt/intel/oneapi/setvars.sh 
 RUN cmake -B build -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=Intel10_64lp -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_NATIVE=ON
 
-# make only the server target
-# 23 Sept - run parallel
 RUN cmake --build build -j 6 \
     --config Release \
     --target llama-server \

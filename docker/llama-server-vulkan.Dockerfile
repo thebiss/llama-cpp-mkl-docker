@@ -1,11 +1,11 @@
-#
-# From the llama.cpp folder, with tweaks
-#
+##
+## Build a llama.cpp instance that uses VULKAN "GPU acceleration"
+##
 
 ARG UBUNTU_VERSION=jammy
 
 ##
-## BUILD STAGE
+## INIT STAGE
 ##
 FROM ubuntu:$UBUNTU_VERSION AS build
 
@@ -14,43 +14,44 @@ FROM ubuntu:$UBUNTU_VERSION AS build
 # add software-properties-common for add-apt-respository
 RUN apt update && \
     apt install -y \
-        git \
-        build-essential \
-        cmake \
-        wget \
         software-properties-common
 
-        # Add source for Vulkan SDK and cURL
-RUN wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | apt-key add - && \
-wget -qO /etc/apt/sources.list.d/lunarg-vulkan-jammy.list https://packages.lunarg.com/vulkan/lunarg-vulkan-jammy.list 
+# Add source for Vulkan SDK
+ADD https://packages.lunarg.com/lunarg-signing-key-pub.asc /tmp/
+ADD https://packages.lunarg.com/vulkan/lunarg-vulkan-jammy.list /etc/apt/sources.list.d/
+RUN apt-key add /tmp/lunarg-signing-key-pub.asc
 
 # Add source for Update MESA using the PPA to fix driver issue
 # https://github.com/microsoft/wslg/issues/40#issuecomment-2037539322
 RUN add-apt-repository ppa:kisak/kisak-mesa 
 
 # Update indexes, upgrade drivers
-RUN apt update -y && \
-    apt upgrade -y
+RUN apt update 
 
+# Install build & diagnostic tools
+RUN apt-get install -y \
+        git \
+        build-essential \
+        cmake \
+        wget \
+        curl \
+        strace \
+        sudo 
 
 # Install Vulkan SDK and CURL 
 RUN apt-get install -y \
         vulkan-sdk \
-        libcurl4-openssl-dev \
-        curl \
-        pciutils \
         vulkan-tools \
-        mesa-utils
+        libcurl4-openssl-dev \
+        pciutils \
+        mesa-utils \
+        vainfo    
 
-# Install diagnostic utils
-RUN apt-get install -y \
-        clinfo \
-        strace \
-        vainfo \
-        sudo 
+##
+## BUILD STAGE
+##
 
-
-
+# FROM - not used, same image as above
         
 ## Add user
 RUN useradd -m --uid 1010 llamauser
@@ -71,20 +72,24 @@ WORKDIR /home/llamauser/git
 
 
 # Build it
-# WORKDIR /app
-# COPY . .
-RUN cmake -B build -DGGML_VULKAN=1 -DLLAMA_CURL=1 && \
-    cmake --build build --config Release --target llama-server --target llama-gguf --target llama-bench -j 6
+RUN cmake -B build -DGGML_VULKAN=1 -DLLAMA_CURL=1 
 
-# Clean up
+RUN cmake --build build -j 6 \
+    --config Release \
+    --target llama-server \
+    --target llama-gguf \
+    --target llama-bench \
+    --target test-backend-ops
+
+# cleanup ahead of the runtime copy
+RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
+
 
 ##
 ## RUNTIME 
 ##
-
-
-
 # FROM same image - no new image
+
 WORKDIR /home/llamauser
 COPY --chown=llamauser:llamauser ./src/* ./
 

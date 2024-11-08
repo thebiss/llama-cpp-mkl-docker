@@ -1,6 +1,6 @@
-#
-# docker build -t bbissell/llama-cpp-mkl:b3467
-#
+##
+## Build a llama.cpp instance that uses Intel SYCL GPU acceleration
+##
 
 ARG  ONEAPI_IMAGE_VER=2024.2.1-0-devel-ubuntu22.04
 
@@ -29,8 +29,6 @@ WORKDIR /home/llamauser/git
 # source /opt/intel/oneapi/setvars.sh 
 RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_F16=ON
 
-# make only the server target
-# 23 Sept - run parallel
 RUN cmake --build build -j 6 \
     --config Release \
     --target llama-server \
@@ -66,7 +64,6 @@ RUN apt-get install -y \
 # ENV XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir
 # ENV LD_LIBRARY_PATH=/usr/lib/wsl/lib
 
-
 RUN useradd -m --uid 1010 llamauser
 USER 1010:1010
 WORKDIR /home/llamauser
@@ -74,18 +71,19 @@ WORKDIR /home/llamauser
 COPY --from=build /home/llamauser/git ./git
 COPY --chown=llamauser:llamauser ./src/* ./
 
-# Can't copy drivers from outside the source tree!
-# COPY /usr/lib/x86_64-linux-gnu/dri/d3d12_dri.so /usr/lib/x86_64-linux-gnu/dri
-# COPY /usr/lib/x86_64-linux-gnu/dri/d3d12_drv_video.so /usr/lib/x86_64-linux-gnu/dri
-
-# SYCL: required for unified memory; set here by default. Broken?
-ENV ZES_ENABLE_SYSMAN=1
-
 # SYCL: Requires access to WSL libs and DRI drivers
+# - docker Can't copy drivers from outside the source tree!
+# - invalid - COPY /usr/lib/x86_64-linux-gnu/dri/d3d12_dri.so /usr/lib/x86_64-linux-gnu/dri
+# - invalid - COPY /usr/lib/x86_64-linux-gnu/dri/d3d12_drv_video.so /usr/lib/x86_64-linux-gnu/dri
+# - so mount from parent WSL2 instead
 VOLUME [ "/usr/lib/wsl" ]
 VOLUME [ "/usr/lib/x86_64-linux-gnu/dri" ]
 
 # RUN phase
+
+# SYCL: required for unified memory; set here by default. Broken?
+ENV ZES_ENABLE_SYSMAN=1
+
 # lf gets the bin name from LLAMA_SERVER_BIN
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
 ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
