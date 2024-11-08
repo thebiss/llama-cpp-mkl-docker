@@ -10,6 +10,7 @@ set -x
 docker run -it --rm \
     --name "test-llama-cpp-intelmkl" \
     --volume "${MODELDIR}:/var/models:ro" \
+    --env LLAMA_BENCH_OPTS="--threads 8" \
     bbissell/llama-cpp-mkl:latest \
     /bin/bash
 
