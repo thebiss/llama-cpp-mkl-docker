@@ -56,46 +56,15 @@ RUN apt-get install -y \
     intel-level-zero-gpu \
     intel-media-va-driver-non-free
 
-# 7 Nov 2024 - Don't need OpenGL or MESA, or video acceleration drivers
-    # level-zero \
-    # libegl-mesa0 \
-    # libegl1-mesa \
-    # libgbm1 \
-    # libgl1-amber-dri \
-    # libgl1-mesa-dri \
-    # libgl1-mesa-glx \
-    # libglapi-mesa \
-    # libglu1-mesa \
-    # libglx-mesa0 \
-    # libigdgmm12 \
-    # libmfx1 \
-    # libmfxgen1 \
-    # libvpl2 \
-    # libxatracker2 \
-    # mesa-va-drivers \
-    # mesa-vdpau-drivers \
-    # mesa-vulkan-drivers \
-    # mesa-utils-bin \
-    # mesa-utils \
-    # va-driver-all \
-    # vdpau-driver-all
-
-# RUN apt-get install -y \
-#     libegl1-mesa-dev \    
-#     libgl1-mesa-dev \
-#     libgles2-mesa-dev
-
 # install utils
 RUN apt-get install -y \
     clinfo \
     strace \
     sudo
-#    vainfo \
 
 # Tips https://github.com/microsoft/wslg/issues/531
 # ENV XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir
 # ENV LD_LIBRARY_PATH=/usr/lib/wsl/lib
-
 
 
 RUN useradd -m --uid 1010 llamauser
@@ -119,12 +88,13 @@ VOLUME [ "/usr/lib/x86_64-linux-gnu/dri" ]
 # RUN phase
 # lf gets the bin name from LLAMA_SERVER_BIN
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
-ENV LLAMA_SERVER_BIN="/home/llamauser/git/build/bin/llama-server"
-ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 33"
+ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
+ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
+
+RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
 
 # Models: mount externally
 VOLUME [ "/var/models" ]
-
 EXPOSE 8080
 
-CMD ["/bin/bash","/home/llamauser/llama-server-start.sh"]
+CMD ["/bin/bash","llama-server-start.sh"]

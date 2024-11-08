@@ -67,7 +67,7 @@ ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 # Fetch from repo
 ADD --chown=1010:1010 --keep-git-dir=true https://github.com/ggerganov/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
-WORKDIR git
+WORKDIR /home/llamauser/git
 
 
 # Build it
@@ -86,16 +86,18 @@ RUN cmake -B build -DGGML_VULKAN=1 -DLLAMA_CURL=1 && \
 
 # FROM same image - no new image
 WORKDIR /home/llamauser
-
 COPY --chown=llamauser:llamauser ./src/* ./
-ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
-ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
 
 ## Run phase
+ENV LLAMA_PATH="/home/llamauser/git/build/bin"
+ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
+ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
+
+RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
 
 # mount models externally
 VOLUME [ "/var/models" ]
 EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN
-CMD ["/bin/bash","/home/llamauser/llama-server-start.sh"]
+CMD ["/bin/bash","llama-server-start.sh"]

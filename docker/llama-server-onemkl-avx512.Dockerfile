@@ -36,7 +36,6 @@ RUN cmake --build build -j 6 \
     --target llama-server \
     --target llama-gguf \
     --target llama-bench \
-    --target llama-ls-sycl-device \
     --target test-backend-ops
 
 # cleanup ahead of the runtime copy
@@ -52,15 +51,18 @@ USER 1010:1010
 WORKDIR /home/llamauser
 
 COPY --from=build /home/llamauser/git ./git
-
 COPY --chown=llamauser:llamauser ./src/* ./
-ENV LLAMA_SERVER_BIN=/home/llamauser/git/build/bin/llama-server
 
 ## Run phase
+
+ENV LLAMA_PATH="/home/llamauser/git/build/bin"
+ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
+
+RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
 
 # mount models externally
 VOLUME [ "/var/models" ]
 EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN
-CMD ["/bin/bash","/home/llamauser/llama-server-start.sh"]
+CMD ["/bin/bash","llama-server-start.sh"]
