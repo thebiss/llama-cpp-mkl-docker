@@ -159,3 +159,83 @@ Additional parameters from $LLAMA_BENCH_OPTS: -t 8
 build: 8f275a7 (1)
 llamauser@498d40168967:~$
 ```
+
+
+# GPU performance 
+## `test-backend-ops perf` benchmark
+
+```
+llamauser@51353f548f6d:~$ ./git/build/bin/test-backend-ops perf
+ggml_sycl_init: GGML_SYCL_FORCE_MMQ:   no
+ggml_sycl_init: SYCL_USE_XMX: yes
+ggml_sycl_init: found 1 SYCL devices:
+Testing 2 devices
+
+Backend 1/2: SYCL0
+[SYCL] call ggml_check_sycl
+ggml_check_sycl: GGML_SYCL_DEBUG: 0
+ggml_check_sycl: GGML_SYCL_F16: yes
+found 1 SYCL devices:
+|  |                   |                                       |       |Max    |        |Max  |Global |                     |
+|  |                   |                                       |       |compute|Max work|sub  |mem    |                     |
+|ID|        Device Type|                                   Name|Version|units  |group   |group|size   |       Driver version|
+|--|-------------------|---------------------------------------|-------|-------|--------|-----|-------|---------------------|
+| 0| [level_zero:gpu:0]|                Intel Graphics [0x9a49]|    1.3|     80|     512|   32| 15538M|            1.3.27642|
+  Device description: Intel(R) Graphics [0x9a49]
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+  Device memory: 14818 MB (14818 MB free)
+
+  ADD(type=f32,ne=[4096,1,1,1],nr=[1,1,1,1]):                 171990 runs -     5.83 us/run -       48 kB/run -    0.37 GB/s
+  ADD(type=f32,ne=[4096,1,1,1],nr=[1,512,1,1]):                 2732 runs -   413.23 us/run -    24576 kB/run -   28.37 GB/s
+  MUL_MAT(type_a=f32,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                     852 runs - 12960.43 us/run - 117.44 MFLOP/run -   9.06 GFLOPS
+  MUL_MAT(type_a=f16,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                     852 runs -  6093.61 us/run - 117.44 MFLOP/run -  19.27 GFLOPS
+  MUL_MAT(type_a=bf16,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]): not supported
+  MUL_MAT(type_a=q4_0,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  2129.73 us/run - 117.44 MFLOP/run -  55.14 GFLOPS
+  MUL_MAT(type_a=q4_1,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  2144.95 us/run - 117.44 MFLOP/run -  54.75 GFLOPS
+  MUL_MAT(type_a=q5_0,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  2607.42 us/run - 117.44 MFLOP/run -  45.04 GFLOPS
+  MUL_MAT(type_a=q5_1,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  2559.69 us/run - 117.44 MFLOP/run -  45.88 GFLOPS
+  MUL_MAT(type_a=q8_0,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  3293.70 us/run - 117.44 MFLOP/run -  35.66 GFLOPS
+  MUL_MAT(type_a=q2_K,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   1704 runs -  1158.33 us/run - 117.44 MFLOP/run - 101.39 GFLOPS
+  MUL_MAT(type_a=q3_K,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  1942.92 us/run - 117.44 MFLOP/run -  60.45 GFLOPS
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  1379.11 us/run - 117.44 MFLOP/run -  85.16 GFLOPS
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  2666.07 us/run - 117.44 MFLOP/run -  44.05 GFLOPS
+  MUL_MAT(type_a=q6_K,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    852 runs -  2843.95 us/run - 117.44 MFLOP/run -  41.29 GFLOPS
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                 852 runs -  3048.70 us/run - 117.44 MFLOP/run -  38.52 GFLOPS
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                  852 runs -  4089.12 us/run - 117.44 MFLOP/run -  28.72 GFLOPS
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   852 runs -  2660.76 us/run - 117.44 MFLOP/run -  44.14 GFLOPS
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                 852 runs -  5374.60 us/run - 117.44 MFLOP/run -  21.85 GFLOPS
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   852 runs -  2675.44 us/run - 117.44 MFLOP/run -  43.90 GFLOPS
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   852 runs -  2758.58 us/run - 117.44 MFLOP/run -  42.57 GFLOPS
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                  852 runs -  3976.88 us/run - 117.44 MFLOP/run -  29.53 GFLOPS
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   852 runs -  5251.48 us/run - 117.44 MFLOP/run -  22.36 GFLOPS
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=4096,n=1,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                  852 runs -  4179.45 us/run - 117.44 MFLOP/run -  28.10 GFLOPS
+  MUL_MAT(type_a=f32,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    22 runs - 46218.91 us/run -  60.13 GFLOP/run -   1.30 TFLOPS
+  MUL_MAT(type_a=f16,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                    16 runs - 63400.50 us/run -  60.13 GFLOP/run - 948.41 GFLOPS
+  MUL_MAT(type_a=bf16,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]): not supported
+  MUL_MAT(type_a=q4_0,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68581.31 us/run -  60.13 GFLOP/run - 876.76 GFLOPS
+  MUL_MAT(type_a=q4_1,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 69396.75 us/run -  60.13 GFLOP/run - 866.46 GFLOPS
+  MUL_MAT(type_a=q5_0,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68641.44 us/run -  60.13 GFLOP/run - 875.99 GFLOPS
+  MUL_MAT(type_a=q5_1,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68661.88 us/run -  60.13 GFLOP/run - 875.73 GFLOPS
+  MUL_MAT(type_a=q8_0,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 69134.69 us/run -  60.13 GFLOP/run - 869.74 GFLOPS
+  MUL_MAT(type_a=q2_K,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68752.31 us/run -  60.13 GFLOP/run - 874.58 GFLOPS
+  MUL_MAT(type_a=q3_K,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68618.75 us/run -  60.13 GFLOP/run - 876.28 GFLOPS
+  MUL_MAT(type_a=q4_K,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68864.44 us/run -  60.13 GFLOP/run - 873.16 GFLOPS
+  MUL_MAT(type_a=q5_K,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68865.56 us/run -  60.13 GFLOP/run - 873.14 GFLOPS
+  MUL_MAT(type_a=q6_K,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                   16 runs - 68825.31 us/run -  60.13 GFLOP/run - 873.65 GFLOPS
+  MUL_MAT(type_a=iq2_xxs,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                14 runs - 71706.79 us/run -  60.13 GFLOP/run - 838.55 GFLOPS
+  MUL_MAT(type_a=iq2_xs,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                 14 runs - 72496.14 us/run -  60.13 GFLOP/run - 829.42 GFLOPS
+  MUL_MAT(type_a=iq2_s,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                  16 runs - 71278.88 us/run -  60.13 GFLOP/run - 843.58 GFLOPS
+  MUL_MAT(type_a=iq3_xxs,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                14 runs - 75975.36 us/run -  60.13 GFLOP/run - 791.43 GFLOPS
+  MUL_MAT(type_a=iq1_s,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                  14 runs - 71726.36 us/run -  60.13 GFLOP/run - 838.32 GFLOPS
+  MUL_MAT(type_a=iq1_m,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                  16 runs - 71387.31 us/run -  60.13 GFLOP/run - 842.30 GFLOPS
+  MUL_MAT(type_a=iq4_nl,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                 14 runs - 72304.50 us/run -  60.13 GFLOP/run - 831.62 GFLOPS
+  MUL_MAT(type_a=iq3_s,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                  14 runs - 74324.71 us/run -  60.13 GFLOP/run - 809.01 GFLOPS
+  MUL_MAT(type_a=iq4_xs,type_b=f32,m=4096,n=512,k=14336,bs=[1,1],nr=[1,1],per=[0,1,2,3]):                 14 runs - 72537.64 us/run -  60.13 GFLOP/run - 828.94 GFLOPS
+  Backend SYCL0: OK
+
+Backend 2/2: CPU
+  Skipping CPU backend
+2/2 backends passed
+OK
+llamauser@51353f548f6d:~$
+```
