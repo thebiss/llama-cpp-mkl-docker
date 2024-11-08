@@ -9,7 +9,9 @@
 # 23 Sept   - try b3812
 # 24 Oct    - try b3974 - better server prompt handling + more
 # 4 Nov     - try 3989 - new vulkan ops
-LLAMACPP_VER=b3989
+## LLAMACPP_VER=b3989
+LLAMACPP_VER=b4027
+
 
 # Default model to run
 _MODEL_DEFAULT="../models/mistralai/mistral-v0.3/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"
