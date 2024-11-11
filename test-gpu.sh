@@ -25,6 +25,7 @@ docker run -it --rm \
     -v /usr/lib/wsl:/usr/lib/wsl \
     -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \
     \
+    --publish 8080:8080 \
     --volume "${MODELDIR}:/var/models:ro" \
     bbissell/llama-cpp-mkl-gpu:latest \
     /bin/bash

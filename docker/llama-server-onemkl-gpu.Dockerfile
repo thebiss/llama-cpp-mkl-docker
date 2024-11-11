@@ -84,6 +84,16 @@ VOLUME [ "/usr/lib/x86_64-linux-gnu/dri" ]
 # SYCL: required for unified memory; set here by default. Broken?
 ENV ZES_ENABLE_SYSMAN=1
 
+#
+# SYCL: Suggested by https://github.com/intel-analytics/ipex-llm/blob/main/docs/mddocs/Quickstart/llama_cpp_quickstart.md
+#
+ENV SYCL_CACHE_PERSISTENT=1
+# [optional] under most circumstances, the following environment variable may improve performance, but sometimes this may also cause performance degradation
+ENV SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
+# [optional] if you want to run on single GPU, use below command to limit GPU may improve performance
+ENV ONEAPI_DEVICE_SELECTOR=level_zero:0
+
+
 # lf gets the bin name from LLAMA_SERVER_BIN
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
 ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"

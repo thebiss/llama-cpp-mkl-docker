@@ -10,8 +10,9 @@
 # 24 Oct    - b3974 - better server prompt handling + more
 # 4 Nov     - b3989 - new vulkan ops
 # 9 Nov     - b4048 - better UI, other q6 opts
-LLAMACPP_VER=b4048
-
+# 11 Nov    - b4066 - more sycl acceleration from commit 3bcd40b
+LLAMACPP_VER=b4066
+TIME_NOW_MINS="$(date -Iminutes | sed 's/\://g')"
 
 _MODEL_ROOT="../models"
 # Default model to run
