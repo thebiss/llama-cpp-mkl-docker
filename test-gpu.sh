@@ -23,11 +23,10 @@ docker run -it --rm \
     --device=/dev/dri/renderD128 \
     --group-add video \
     -v /usr/lib/wsl:/usr/lib/wsl \
-    -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \
     \
     --publish 8080:8080 \
     --volume "${MODELDIR}:/var/models:ro" \
     bbissell/llama-cpp-mkl-gpu:latest \
     /bin/bash
 
-exit 0;
+    # -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \

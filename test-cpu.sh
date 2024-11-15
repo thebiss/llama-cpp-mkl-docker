@@ -14,4 +14,3 @@ docker run -it --rm \
     bbissell/llama-cpp-mkl:latest \
     /bin/bash
 
-exit 0;

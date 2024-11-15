@@ -11,7 +11,10 @@
 # 4 Nov     - b3989 - new vulkan ops
 # 9 Nov     - b4048 - better UI, other q6 opts
 # 11 Nov    - b4066 - more sycl acceleration from commit 3bcd40b
-LLAMACPP_VER=b4066
+# 15 Nov    - b4069 - try the fixes to test-backend-ops ; still out of bounds on GPU
+#           - b4077 - test 
+#           - b4082 new vers fails
+LLAMACPP_VER=b4077
 TIME_NOW_MINS="$(date -Iminutes | sed 's/\://g')"
 
 _MODEL_ROOT="../models"

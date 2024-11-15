@@ -2,12 +2,12 @@
 ## Build a llama.cpp instance that uses Intel SYCL GPU acceleration
 ##
 
-ARG  ONEAPI_IMAGE_VER=2024.2.1-0-devel-ubuntu22.04
+ARG ONEAPI_VERSION=2024.2.1-0-devel-ubuntu22.04
 
 ##
 ## Build Stage
 ##
-FROM intel/oneapi-basekit:${ONEAPI_IMAGE_VER} AS build
+FROM intel/oneapi-basekit:${ONEAPI_VERSION} AS build
 
 RUN useradd -m --uid 1010 llamauser
 USER 1010:1010
@@ -43,7 +43,7 @@ RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -
 ##
 ## Runtime
 ##
-FROM intel/oneapi-runtime:${ONEAPI_IMAGE_VER} AS runtime
+FROM intel/oneapi-runtime:${ONEAPI_VERSION} AS runtime
 
 
 RUN apt update
