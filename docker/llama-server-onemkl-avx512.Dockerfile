@@ -1,8 +1,8 @@
 ##
 ## Build a llama.cpp instance that uses Intel One MKL CPU acceleration
 ##
-
-ARG ONEAPI_VERSION=2024.2.1-0-devel-ubuntu22.04
+ARG ONEAPI_VERSION=2025.0.0-0-devel-ubuntu22.04
+# ARG ONEAPI_VERSION=2024.2.1-0-devel-ubuntu22.04
 
 ##
 ## Build Stage
@@ -29,7 +29,7 @@ WORKDIR /home/llamauser/git
 # source /opt/intel/oneapi/setvars.sh 
 RUN cmake -B build -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=Intel10_64lp -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_NATIVE=ON
 
-RUN cmake --build build -j 6 \
+RUN cmake --build build -j $(nproc) \
     --config Release \
     --target llama-server \
     --target llama-gguf \
@@ -56,7 +56,11 @@ COPY --chown=llamauser:llamauser ./src/* ./
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
 ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
 
+ARG LLAMACPP_VERSION_TAG
+ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
+
 RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
+RUN echo 'PS1="(build $LLAMACPP_VERSION) $PS1"' >> .bashrc
 
 # mount models externally
 VOLUME [ "/var/models" ]

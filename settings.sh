@@ -13,8 +13,8 @@
 # 11 Nov    - b4066 - more sycl acceleration from commit 3bcd40b
 # 15 Nov    - b4069 - try the fixes to test-backend-ops ; still out of bounds on GPU
 #           - b4077 - test 
-#           - b4082 new vers fails
-LLAMACPP_VER=b4077
+#           - b4082 new vers fails, revert
+LLAMACPP_VER=b4122
 TIME_NOW_MINS="$(date -Iminutes | sed 's/\://g')"
 
 _MODEL_ROOT="../models"
