@@ -102,7 +102,7 @@ ARG LLAMACPP_VERSION_TAG
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
-RUN echo 'PS1="(build $LLAMACPP_VERSION) $PS1"' >> .bashrc
+RUN echo 'PS1="\n(llama.cpp rel $LLAMACPP_VERSION for vulkan)\n$PS1"' >> .bashrc
 
 # mount models externally
 VOLUME [ "/var/models" ]

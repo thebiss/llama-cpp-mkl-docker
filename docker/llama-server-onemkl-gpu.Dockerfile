@@ -27,7 +27,8 @@ WORKDIR /home/llamauser/git
 
 # You can skip this step if  in oneapi-basekit docker image, only required for manual installation
 # source /opt/intel/oneapi/setvars.sh 
-RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_F16=ON
+RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx 
+# -DGGML_SYCL_F16=ON
 
 RUN cmake --build build -j $(nproc) \
     --config Release \
@@ -103,7 +104,7 @@ ARG LLAMACPP_VERSION_TAG
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
-RUN echo 'PS1="(build $LLAMACPP_VERSION) $PS1"' >> .bashrc
+RUN echo 'PS1="\n(llama.cpp rel $LLAMACPP_VERSION for SYCL)\n$PS1"' >> .bashrc
 
 # Models: mount externally
 VOLUME [ "/var/models" ]
