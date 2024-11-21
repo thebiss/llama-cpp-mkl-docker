@@ -27,7 +27,7 @@ WORKDIR /home/llamauser/git
 
 # You can skip this step if  in oneapi-basekit docker image, only required for manual installation
 # source /opt/intel/oneapi/setvars.sh 
-RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx 
+RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_DEBUG=ON
 # -DGGML_SYCL_F16=ON
 
 RUN cmake --build build -j $(nproc) \
@@ -44,8 +44,8 @@ RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -
 ##
 ## Runtime
 ##
-FROM intel/oneapi-runtime:${ONEAPI_VERSION} AS runtime
-
+# FROM intel/oneapi-runtime:${ONEAPI_VERSION} AS runtime
+FROM intel/oneapi-basekit:${ONEAPI_VERSION} AS runtime
 
 RUN apt update
 
@@ -91,8 +91,6 @@ ENV ZES_ENABLE_SYSMAN=1
 ENV SYCL_CACHE_PERSISTENT=1
 # [optional] under most circumstances, the following environment variable may improve performance, but sometimes this may also cause performance degradation
 ENV SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
-# [optional] if you want to run on single GPU, use below command to limit GPU may improve performance
-ENV ONEAPI_DEVICE_SELECTOR=level_zero:0
 
 
 # lf gets the bin name from LLAMA_SERVER_BIN
