@@ -2,10 +2,10 @@
 set -euo pipefail
 
 [ -z "$(which figlet)" ] || figlet CPU - Intel OneAPI MKL
-./docker-build-intel-mkl.sh
+./docker-build-onemkl-cpu.sh
 
 [ -z "$(which figlet)" ] || figlet GPU - Intel OneAPI SYCL
-./docker-build-gpu.sh
+./docker-build-sycl-gpu.sh
 
 [ -z "$(which figlet)" ] || figlet GPU - Vulkan
 ./docker-build-vulkan.sh
