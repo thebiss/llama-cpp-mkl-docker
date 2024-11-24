@@ -54,7 +54,7 @@ RUN apt-get install -y \
 # FROM - not used, same image as above
         
 ## Add user
-RUN useradd -m --uid 1010 llamauser
+RUN useradd -m --uid 1010 --groups video llamauser
 USER 1010:1010
 WORKDIR /home/llamauser
 
@@ -79,7 +79,8 @@ RUN cmake --build build -j $(nproc) \
     --target llama-server \
     --target llama-gguf \
     --target llama-bench \
-    --target test-backend-ops
+    --target test-backend-ops \
+    --target llama-cli
 
 # cleanup ahead of the runtime copy
 RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete

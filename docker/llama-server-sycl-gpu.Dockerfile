@@ -27,8 +27,7 @@ WORKDIR /home/llamauser/git
 
 # You can skip this step if  in oneapi-basekit docker image, only required for manual installation
 # source /opt/intel/oneapi/setvars.sh 
-RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_DEBUG=ON
-# -DGGML_SYCL_F16=ON
+RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_DEBUG=ON -DGGML_SYCL_F16=ON
 
 RUN cmake --build build -j $(nproc) \
     --config Release \
@@ -36,7 +35,9 @@ RUN cmake --build build -j $(nproc) \
     --target llama-gguf \
     --target llama-bench \
     --target llama-ls-sycl-device \
-    --target test-backend-ops
+    --target test-backend-ops \
+    --target llama-cli
+
 
 # cleanup ahead of the runtime copy
 RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
@@ -65,7 +66,7 @@ RUN apt-get install -y \
 # ENV XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir
 # ENV LD_LIBRARY_PATH=/usr/lib/wsl/lib
 
-RUN useradd -m --uid 1010 llamauser
+RUN useradd -m --uid 1010 --groups video llamauser
 USER 1010:1010
 WORKDIR /home/llamauser
 

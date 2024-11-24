@@ -3,15 +3,17 @@
 source ./settings.sh
 
 LLAMACPP_VER=${LLAMACPP_VER:-}
+DOCKERFILE=llama-server-vulkan.Dockerfile
+IMAGENAME=bbissell/llama-cpp-vulkan
 
 cd ./docker
 
 printf "\nBuilding from llamap.cpp version $LLAMACPP_VER\n\n"
 
 docker build . \
-    --file llama-server-vulkan.Dockerfile \
-    --tag bbissell/llama-cpp-vulkan:${LLAMACPP_VER} \
-    --tag bbissell/llama-cpp-vulkan:latest \
+    --file "${DOCKERFILE}" \
+    --tag "${IMAGENAME}:${LLAMACPP_VER}" \
+    --tag "${IMAGENAME}:latest" \
     --build-arg LLAMACPP_VERSION_TAG=${LLAMACPP_VER} \
     --rm=false
 
