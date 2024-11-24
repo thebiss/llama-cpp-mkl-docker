@@ -1,3 +1,62 @@
+# 2024-11-23 - build 4154
+## SYCL -> GPU
+
+Test wont run with the MOE granite models - fails with `The number of work-items in each dimension of a work-group cannot exceed {512, 512, 512} for this deviceException caught at file:/home/llamauser/git/ggml/src/ggml-sycl/ggml-sycl.cpp, line:3699`
+
+With 8b instruct Q4:
+
+```
+(llama.cpp rel b4154 for SYCL)
+llamauser@d89b216333b7:~$ ./git/build/bin/llama-bench -p 10 -n 10 -r 10 -m /var/models/ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf 
+ggml_sycl_init: GGML_SYCL_FORCE_MMQ:   no
+ggml_sycl_init: SYCL_USE_XMX: yes
+ggml_sycl_init: found 1 SYCL devices:
+| model                          |       size |     params | backend    | ngl |          test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------------: | -------------------: |
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+[SYCL] call ggml_check_sycl
+ggml_check_sycl: GGML_SYCL_DEBUG: 0
+ggml_check_sycl: GGML_SYCL_F16: yes
+found 1 SYCL devices:
+|  |                   |                                       |       |Max    |        |Max  |Global |                     |
+|  |                   |                                       |       |compute|Max work|sub  |mem    |                     |
+|ID|        Device Type|                                   Name|Version|units  |group   |group|size   |       Driver version|
+|--|-------------------|---------------------------------------|-------|-------|--------|-----|-------|---------------------|
+| 0| [level_zero:gpu:0]|                Intel Graphics [0x9a49]|   12.0|     80|     512|   32| 15538M|         1.3.30049+10|
+| granite 3B Q4_K - Medium       |   4.60 GiB |     8.17 B | SYCL       |  99 |          pp10 |          2.34 ± 0.03 |
+| granite 3B Q4_K - Medium       |   4.60 GiB |     8.17 B | SYCL       |  99 |          tg10 |          2.92 ± 0.06 |
+
+build: 55ed008 (1)
+```
+
+## OneMKL -> CPU
+
+test with 4 and 8 threads:
+
+```
+(llama.cpp rel b4154 with OneAPI MKL)
+llamauser@455f1b2e56d2:~$ ./git/build/bin/llama-bench -p 10 -n 10 -r 10 -m /var/models/ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf 
+| model                          |       size |     params | backend    | threads |          test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | ------------: | -------------------: |
+| granite 3B Q4_K - Medium       |   4.60 GiB |     8.17 B | BLAS       |       4 |          pp10 |         10.59 ± 0.85 |
+| granite 3B Q4_K - Medium       |   4.60 GiB |     8.17 B | BLAS       |       4 |          tg10 |          6.04 ± 0.56 |
+
+build: 55ed008 (1)
+
+(llama.cpp rel b4154 with OneAPI MKL)
+llamauser@455f1b2e56d2:~$ ./git/build/bin/llama-bench --threads 8 -p 10 -n 10 -r 10 -m /var/models/ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf 
+| model                          |       size |     params | backend    | threads |          test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | ------------: | -------------------: |
+| granite 3B Q4_K - Medium       |   4.60 GiB |     8.17 B | BLAS       |       8 |          pp10 |         12.45 ± 1.37 |
+| granite 3B Q4_K - Medium       |   4.60 GiB |     8.17 B | BLAS       |       8 |          tg10 |          5.94 ± 0.86 |
+
+build: 55ed008 (1)
+
+```
+
+
 # 2024-11-15 - build 4077
 ## Vulkan
 

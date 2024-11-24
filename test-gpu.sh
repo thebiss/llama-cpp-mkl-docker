@@ -21,7 +21,6 @@ docker run -it --rm \
     --device=/dev/dxg \
     --device=/dev/dri/card0 \
     --device=/dev/dri/renderD128 \
-    --group-add video \
     -v /usr/lib/wsl:/usr/lib/wsl \
     \
     --publish 8080:8080 \

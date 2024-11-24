@@ -24,7 +24,6 @@ docker run -it --rm \
     --device=/dev/dxg \
     --device=/dev/dri/card0 \
     --device=/dev/dri/renderD128 \
-    --group-add video \
     --env DISPLAY \
     --env WAYLAND_DISPLAY \
     --env XDG_RUNTIME_DIR \
