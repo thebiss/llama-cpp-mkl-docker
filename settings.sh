@@ -1,7 +1,7 @@
 #!/usr/bin/echo Source this instead.
 
 # Build LLAMACPP release tag...
-LLAMACPP_VER=b4154
+LLAMACPP_VER=b4179
 TIME_NOW_MINS="$(date -Iminutes | sed 's/\://g')"
 
 _MODEL_ROOT="../models"
