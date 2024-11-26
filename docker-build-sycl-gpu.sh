@@ -4,7 +4,13 @@ source ./settings.sh
 
 LLAMACPP_VER=${LLAMACPP_VER:-}
 DOCKERFILE=llama-server-sycl-gpu.Dockerfile
-IMAGENAME=bbissell/llama-cpp-mkl-gpu
+IMAGE=llama-cpp-mkl-gpu
+
+IMAGENAME=bbissell/${IMAGE}
+MESSAGE="Building\t${IMAGE}\nfrom\t\tllamap.cpp rel $LLAMACPP_VER"
+
+[ "$(which figlet)" ] && printf "${MESSAGE}" | expand | figlet -t
+printf "\n${MESSAGE}\n\n"
 
 cd ./docker
 
