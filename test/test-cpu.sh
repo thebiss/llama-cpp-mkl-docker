@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # free buffers
-./cleanup-wsl-cache.sh
+../cleanup-wsl-cache.sh
 
-MODELDIR="$(realpath ../models)"
+MODELDIR="$(realpath ../../models)"
 
 # Run the container
 set -x

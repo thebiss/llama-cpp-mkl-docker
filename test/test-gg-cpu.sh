@@ -9,9 +9,9 @@
 # - needs /usr/lib/wsl
 
 # free buffers
-./cleanup-wsl-cache.sh
+../cleanup-wsl-cache.sh
 
-MODELDIR="$(realpath ../models)"
+MODELDIR="$(realpath ../../models)"
 MODELNAME="ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf"
 
 set -x

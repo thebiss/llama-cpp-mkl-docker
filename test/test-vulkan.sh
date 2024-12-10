@@ -14,9 +14,9 @@
 # - don't need  --device=/dev/dri/renderD128 \
 
 # free buffers
-./cleanup-wsl-cache.sh
+../cleanup-wsl-cache.sh
 
-MODELDIR="$(realpath ../models)"
+MODELDIR="$(realpath ../../models)"
 
 # Run the container
 set -x
