@@ -16,7 +16,7 @@ MESSAGE="Building\t${IMAGE}\nfrom\t\tllamap.cpp rel $LLAMACPP_VER"
 [ "$(which figlet)" ] && printf "${MESSAGE}" | expand -t 15,+8 | figlet -t
 printf "\n${MESSAGE}\n\n"
 
-cd ./docker
+pushd ./docker
 
 docker build . \
     --file "${DOCKERFILE}" \
@@ -25,4 +25,6 @@ docker build . \
     --build-arg LLAMACPP_VERSION_TAG=${LLAMACPP_VER} \
     --rm=false
 
-../cleanup-wsl-cache.sh
+popd 
+
+source ./cleanup-wsl-cache.sh
