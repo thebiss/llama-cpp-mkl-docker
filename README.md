@@ -28,7 +28,7 @@ export LLAMACPP_VER=b3472 && ./docker-build.sh
 
 ### Option 1: Use a specific model
 ```bash
-export LLAMA_MODEL_GGUF=/var/model/llama3.gguf && ./start-server.sh
+ ./start-server.sh /var/model/llama3.gguf
 ```
 
 ### Option 2: Use the default models
