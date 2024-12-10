@@ -6,22 +6,14 @@
 ##
 set -euo pipefail
 
-_THIS=$(basename "$0")
-
-##
-## Print params as error, then exit -1
-##
-function _error
-{
-    [ $# -gt 0 ] && echo "${_THIS} Error: ${@:1}" && echo ""
-    exit -1
-}
-
+# Import misc bash tools
+source ./docker/src/stdbash.sh
 
 
 ##
 ## Main
 ##
+stdbash::error "#FIXME - Needs arg changes needed to run with latest containers."
 
 # load defaults
 source ./settings.sh
@@ -36,8 +28,7 @@ LLAMA_MODEL_GGUF=${LLAMA_MODEL_GGUF:-""}
 # if still unset, use the default
 if [ -z "${LLAMA_MODEL_GGUF}" ]; then
     LLAMA_MODEL_GGUF="${_MODEL_DEFAULT}"
-    echo "WARNING: Model not set, using default. Run \"${_THIS} /path/to/model.gguf\" to override."
-    echo ""
+    stdbash::warn "Using model from settings. Run \"${_THIS} /path/to/model.gguf\" to override."
 fi
 
 

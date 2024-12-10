@@ -65,7 +65,8 @@ RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
 RUN echo 'PS1="\n(llama.cpp rel $LLAMACPP_VERSION with OneAPI MKL)\n$PS1"' >> .bashrc
 
 # mount models externally
-VOLUME [ "/var/models" ]
+ENV _MODELHOME="/var/models"
+VOLUME [ "${_MODELHOME}" ]
 EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN

@@ -17,8 +17,8 @@ RUN apt update && \
         software-properties-common
 
 # Add source for Vulkan SDK
-ADD https://packages.lunarg.com/lunarg-signing-key-pub.asc /tmp/
-ADD https://packages.lunarg.com/vulkan/lunarg-vulkan-jammy.list /etc/apt/sources.list.d/
+ADD --chmod=444 https://packages.lunarg.com/lunarg-signing-key-pub.asc /tmp/
+ADD --chmod=444 https://packages.lunarg.com/vulkan/lunarg-vulkan-jammy.list /etc/apt/sources.list.d/
 RUN apt-key add /tmp/lunarg-signing-key-pub.asc
 
 # Add source for Update MESA using the PPA to fix driver issue
@@ -97,7 +97,7 @@ COPY --chown=llamauser:llamauser ./src/* ./
 ## Run phase
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
 ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
-ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
+ENV LLAMA_ARG_N_GPU_LAYERS="99"
 
 ARG LLAMACPP_VERSION_TAG
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
@@ -106,7 +106,8 @@ RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
 RUN echo 'PS1="\n(llama.cpp rel $LLAMACPP_VERSION for vulkan)\n$PS1"' >> .bashrc
 
 # mount models externally
-VOLUME [ "/var/models" ]
+ENV _MODELHOME="/var/models"
+VOLUME [ "${_MODELHOME}" ]
 EXPOSE 8080
 
 # lf gets the bin name from LLAMA_SERVER_BIN

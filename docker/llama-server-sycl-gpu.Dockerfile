@@ -97,7 +97,7 @@ ENV SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
 # lf gets the bin name from LLAMA_SERVER_BIN
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
 ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
-ENV LLAMA_SERVER_EXTRA_OPTIONS="-ngl 99"
+ENV LLAMA_ARG_N_GPU_LAYERS="99"
 
 ARG LLAMACPP_VERSION_TAG
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
@@ -106,7 +106,8 @@ RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
 RUN echo 'PS1="\n(llama.cpp rel $LLAMACPP_VERSION for SYCL)\n$PS1"' >> .bashrc
 
 # Models: mount externally
-VOLUME [ "/var/models" ]
+ENV _MODELHOME="/var/models"
+VOLUME [ "${_MODELHOME}" ]
 EXPOSE 8080
 
 CMD ["/bin/bash","llama-server-start.sh"]

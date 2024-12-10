@@ -6,22 +6,14 @@
 ##
 set -euo pipefail
 
-_THIS=$(basename "$0")
-
-##
-## Print params as error, then exit -1
-##
-function _error
-{
-    [ $# -gt 0 ] && echo "${_THIS} Error: ${@:1}" && echo ""
-    exit -1
-}
-
+# Import misc bash tools
+source ./docker/src/stdbash.sh
 
 
 ##
 ## Main
 ##
+
 
 # load defaults
 source ./settings.sh
@@ -36,14 +28,12 @@ LLAMA_MODEL_GGUF=${LLAMA_MODEL_GGUF:-""}
 # if still unset, use the default
 if [ -z "${LLAMA_MODEL_GGUF}" ]; then
     LLAMA_MODEL_GGUF="${_MODEL_DEFAULT}"
-    echo "WARNING: Model not set, using default. Run \"${_THIS} /path/to/model.gguf\" to override."
-    echo ""
+    stdbash::warn "Using model from settings. Run \"${_THIS} /path/to/model.gguf\" to override."
 fi
-
 
 # Validate existence of absolute path
 LLAMA_MODEL_GGUF=$(realpath ${LLAMA_MODEL_GGUF})
-[ -f "${LLAMA_MODEL_GGUF}" ] || _error "Cannot access model file:" "${LLAMA_MODEL_GGUF}"
+[ -f "${LLAMA_MODEL_GGUF}" ] || stdbash::error "Cannot access model file:" "${LLAMA_MODEL_GGUF}"
 
 # Parts, for mounting
 _LLAMA_MODEL_GGUF_FILEONLY=$(basename "${LLAMA_MODEL_GGUF}")
@@ -52,9 +42,9 @@ _LLAMA_MODEL_GGUF_DIRNAME=$(dirname "${LLAMA_MODEL_GGUF}")
 echo "Using model ${_LLAMA_MODEL_GGUF_FILEONLY}"
 [ -n "`which figlet`"  ] && figlet -w 120 "${_LLAMA_MODEL_GGUF_FILEONLY}"
 
-# Warn - passing context size specs
-LLAMA_ARG_CTX_SIZE=${LLAMA_ARG_CTX_SIZE:-""}
-[ -n "${LLAMA_ARG_CTX_SIZE}" ] && echo "Using context size limit from LLAMA_ARG_CTX_SIZE, ${LLAMA_ARG_CTX_SIZE}"
+_CONTAINER_MODEL_HOME="/var/models"
+_CONTAINER_MODEL_ABS="${_CONTAINER_MODEL_HOME}/${_LLAMA_MODEL_GGUF_FILEONLY}"
+
 
 # On ubuntu on WSL, open a browser
 [ $(which sensible-browser) ] && sensible-browser http://localhost:8080
@@ -64,10 +54,16 @@ set -x
 docker run \
     -it \
     --rm \
-    --volume "${_LLAMA_MODEL_GGUF_DIRNAME}:/var/models:ro" \
+    --volume "${_LLAMA_MODEL_GGUF_DIRNAME}:${_CONTAINER_MODEL_HOME}:ro" \
     --publish 8080:8080 \
-    --env "LLAMA_MODEL_GGUF=${_LLAMA_MODEL_GGUF_FILEONLY}" \
+    --env "LLAMA_ARG_MODEL=${_CONTAINER_MODEL_ABS}" \
     --env "LLAMA_ARG_CTX_SIZE" \
+    --env "LLAMA_ARG_FLASH_ATTN=${LLAMA_ARG_FLASH_ATTN:-"1"}" \
+    --env "LLAMA_ARG_THREADS=${LLAMA_ARG_THREADS:-"8"}" \
+    --env "LLAMA_ARG_HOST=${LLAMA_ARG_HOST:-"0.0.0.0"}" \
+    --env "LLAMA_ARG_PORT=${LLAMA_ARG_PORT:-"8080"}" \
+    --env "LLAMA_ARG_N_PREDICT=${LLAMA_ARG_N_PREDICT:-"-1"}" \
+    --env "LLAMA_SERVER_EXTRA_OPTIONS" \
     --name "llama-cpp-mkl-optimized" \
     bbissell/llama-cpp-mkl:latest
 set +x
