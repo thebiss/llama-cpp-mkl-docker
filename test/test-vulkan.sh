@@ -35,6 +35,6 @@ docker run -it --rm \
     -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \
     --volume "${MODELDIR}:/var/models:ro" \
     --name "test-llamacpp-vulkan" \
-    bbissell/llama-cpp-vulkan:latest \
+    thebiss/llama-cpp-vulkan:latest \
     /bin/bash
 

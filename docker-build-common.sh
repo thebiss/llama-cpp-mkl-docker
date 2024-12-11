@@ -9,9 +9,17 @@
 ##
 set -euo pipefail
 
+# Import misc bash tools
+source ./docker/src/stdbash.sh
 
-IMAGENAME=bbissell/${IMAGE}
-MESSAGE="Building\t${IMAGE}\nfrom\t\tllamap.cpp rel $LLAMACPP_VER"
+# Expectations
+[ -z "${DOCKERFILE:-}" ] && stdbash::error "DOCKERFILE variable must contain the name dockerfile definition to build from"
+[ -z "${IMAGENAME:-}" ] && stdbash::error "IMAGENAME variable must contain the full container image name (repo/name)"
+[ -z "${LLAMACPP_VER:-}" ] && stdbash::error "LLAMACPP_VER variable must contain release tag"
+
+# 
+# IMAGENAME="thebiss/${IMAGE}"
+MESSAGE="Building\t${IMAGENAME}\nfrom\t\tllamap.cpp rel $LLAMACPP_VER"
 
 [ "$(which figlet)" ] && printf "${MESSAGE}" | expand -t 15,+8 | figlet -t
 printf "\n${MESSAGE}\n\n"

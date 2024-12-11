@@ -845,7 +845,7 @@ root@410074afa493:/etc/apt/apt.conf.d# ls -l
 ### Test 1 - Empty Cache, 126.8 sec
 
 ```
-bbissell@IBM-PF2RW5PM:~/dev-in-wsl/llama.cpp.mkl/docker$ docker build . --file test-prep.Dockerfile --tag bbissell/test-prep
+bbissell@IBM-PF2RW5PM:~/dev-in-wsl/llama.cpp.mkl/docker$ docker build . --file test-prep.Dockerfile --tag thebiss/test-prep
 [+] Building 126.8s (18/18) FINISHED                                                                                                                                                                                             docker:default
  => [internal] load build definition from test-prep.Dockerfile                                                                                                                                                                             0.0s
  => => transferring dockerfile: 2.31kB                                                                                                                                                                                                     0.0s
@@ -871,14 +871,14 @@ bbissell@IBM-PF2RW5PM:~/dev-in-wsl/llama.cpp.mkl/docker$ docker build . --file t
  => exporting to image                                                                                                                                                                                                                     2.1s
  => => exporting layers                                                                                                                                                                                                                    2.1s
  => => writing image sha256:f1a9449402f01c165add331b93a89322870bbee2ef302ecaf275598646ccfe9e                                                                                                                                               0.0s
- => => naming to docker.io/bbissell/test-prep                                                                                                                                                                                              0.0s
+ => => naming to docker.io/thebiss/test-prep                                                                                                                                                                                              0.0s
 
 
 ```
 
 ### Test 2 - Warm Cache, 56.5 sec
 ```
-bbissell@IBM-PF2RW5PM:~/dev-in-wsl/llama.cpp.mkl/docker$ docker build . --file test-prep.Dockerfile --tag bbissell/test-prep
+bbissell@IBM-PF2RW5PM:~/dev-in-wsl/llama.cpp.mkl/docker$ docker build . --file test-prep.Dockerfile --tag thebiss/test-prep
 [+] Building 56.5s (19/19) FINISHED                                                                                                                                                                                              docker:default
  => [internal] load build definition from test-prep.Dockerfile                                                                                                                                                                             0.0s
  => => transferring dockerfile: 2.34kB                                                                                                                                                                                                     0.0s
@@ -905,7 +905,7 @@ bbissell@IBM-PF2RW5PM:~/dev-in-wsl/llama.cpp.mkl/docker$ docker build . --file t
  => exporting to image                                                                                                                                                                                                                     2.2s
  => => exporting layers                                                                                                                                                                                                                    2.2s
  => => writing image sha256:fed085e9557d842b31dad92034b8319102cef566c5162df04484895cf9936f7e                                                                                                                                               0.0s
- => => naming to docker.io/bbissell/test-prep                                                                                                                                                                                              0.0s
+ => => naming to docker.io/thebiss/test-prep                                                                                                                                                                                              0.0s
 bbissell@IBM-PF2RW5PM:~/dev-in-wsl/llama.cpp.mkl/docker$
 
 ```

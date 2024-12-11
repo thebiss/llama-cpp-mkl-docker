@@ -25,7 +25,7 @@ docker run -it --rm \
     \
     --publish 8080:8080 \
     --volume "${MODELDIR}:/var/models:ro" \
-    bbissell/llama-cpp-mkl-gpu:latest \
+    thebiss/llama-cpp-mkl-gpu:latest \
     /bin/bash
 
     # -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \

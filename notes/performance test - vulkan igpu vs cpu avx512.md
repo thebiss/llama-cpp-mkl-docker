@@ -170,7 +170,7 @@ llamauser@66f96b5ed32a:~$
 ```
  ./test-cpu.sh
 1
-+ docker run -it --rm --name test-llama-cpp-intelmkl --volume /home/bbissell/dev-in-wsl/models:/var/models:ro bbissell/llama-cpp-mkl:latest /bin/bash
++ docker run -it --rm --name test-llama-cpp-intelmkl --volume /home/thebiss/dev-in-wsl/models:/var/models:ro thebiss/llama-cpp-mkl:latest /bin/bash
 llamauser@498d40168967:~$ ./llama-bench-granite-a400m.sh
 Additional parameters from $LLAMA_BENCH_OPTS:
 ```
@@ -282,7 +282,7 @@ llamauser@51353f548f6d:~$
 
 ## CPU, AVX512
 ```
-+ docker run -it --rm --name test-llama-cpp-intelmkl --volume /home/bbissell/dev-in-wsl/models:/var/models:ro bbissell/llama-cpp-mkl:latest /bin/bash
++ docker run -it --rm --name test-llama-cpp-intelmkl --volume /home/thebiss/dev-in-wsl/models:/var/models:ro thebiss/llama-cpp-mkl:latest /bin/bash
 ```
 
 | model                          |       size |     params | backend    | threads |          test |                  t/s |
@@ -295,7 +295,7 @@ build: 958367b (1)
 
 ## GPU, but likely CPU
 ```
-+ docker run -it --rm --device=/dev/dxg --device=/dev/dri/card0 --device=/dev/dri/renderD128 --group-add video --env DISPLAY --env WAYLAND_DISPLAY --env XDG_RUNTIME_DIR --env LD_LIBRARY_PATH=/usr/lib/wsl/lib --env LIBVA_DRIVER_NAME=d3d12 -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg -v /usr/lib/wsl:/usr/lib/wsl -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri --volume /home/bbissell/dev-in-wsl/models:/var/models:ro bbissell/llama-cpp-mkl-gpu:latest /bin/bash
++ docker run -it --rm --device=/dev/dxg --device=/dev/dri/card0 --device=/dev/dri/renderD128 --group-add video --env DISPLAY --env WAYLAND_DISPLAY --env XDG_RUNTIME_DIR --env LD_LIBRARY_PATH=/usr/lib/wsl/lib --env LIBVA_DRIVER_NAME=d3d12 -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg -v /usr/lib/wsl:/usr/lib/wsl -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri --volume /home/thebiss/dev-in-wsl/models:/var/models:ro thebiss/llama-cpp-mkl-gpu:latest /bin/bash
 ```
 
 | model                          |       size |     params | backend    | threads |          test |                  t/s |
@@ -307,7 +307,7 @@ build: 958367b (1)
 
 ## VULKAN to GPU
 ```
-++ docker run -it --rm --device=/dev/dxg --device=/dev/dri/card0 --device=/dev/dri/renderD128 --group-add video --env DISPLAY --env WAYLAND_DISPLAY --env XDG_RUNTIME_DIR --env LD_LIBRARY_PATH=/usr/lib/wsl/lib --env LIBVA_DRIVER_NAME=d3d12 -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg -v /usr/lib/wsl:/usr/lib/wsl -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri --volume /home/bbissell/dev-in-wsl/models:/var/models:ro --name test-llamacpp-vulkan bbissell/llama-cpp-vulkan:latest /bin/bash
+++ docker run -it --rm --device=/dev/dxg --device=/dev/dri/card0 --device=/dev/dri/renderD128 --group-add video --env DISPLAY --env WAYLAND_DISPLAY --env XDG_RUNTIME_DIR --env LD_LIBRARY_PATH=/usr/lib/wsl/lib --env LIBVA_DRIVER_NAME=d3d12 -v /tmp/.X11-unix:/tmp/.X11-unix -v /mnt/wslg:/mnt/wslg -v /usr/lib/wsl:/usr/lib/wsl -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri --volume /home/thebiss/dev-in-wsl/models:/var/models:ro --name test-llamacpp-vulkan thebiss/llama-cpp-vulkan:latest /bin/bash
 ```
 
 ```

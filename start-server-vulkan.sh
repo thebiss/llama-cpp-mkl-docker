@@ -21,7 +21,7 @@ DOCKER_RUN_ARGS="\
     --volume /usr/lib/wsl:/usr/lib/wsl \
     --volume /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri"
 
-DOCKER_IMAGE_NAME="bbissell/llama-cpp-vulkan:latest"
+DOCKER_IMAGE_NAME="thebiss/llama-cpp-vulkan:latest"
 DOCKER_CONTAINER_NAME="llama-cpp-mkl-optimized"
 
 source ./start-server.sh

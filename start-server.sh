@@ -58,8 +58,8 @@ _CONTAINER_MODEL_ABS="${_CONTAINER_MODEL_HOME}/${_MODEL_GGUF_FILENAME}"
 #
 
 # set to add additional flags, envs, and devices at start
-DOCKER_RUN_ARGS=${DOCKER_RUN_ARGS:-}
-DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME:-"bbissell/llama-cpp-mkl:latest"}
+DOCKER_RUN_ARGS=${DOCKER_RUN_ARGS:-""}
+DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME:-"thebiss/llama-cpp-mkl:latest"}
 DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-mkl-optimized"}
 
 
@@ -69,6 +69,13 @@ DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-mkl-optimized"}
 #
 # Run the container
 #
+
+# Env vars are either:
+# - set by wrapping scripts
+# - set by the initizationization above
+# - set with defaults in settings.sh
+# - unset
+
 set -x
 docker run \
     -it \
@@ -77,11 +84,11 @@ docker run \
     ${DOCKER_RUN_ARGS} \
     --env "LLAMA_ARG_MODEL=${_CONTAINER_MODEL_ABS}" \
     --env "LLAMA_ARG_CTX_SIZE" \
-    --env "LLAMA_ARG_FLASH_ATTN=${LLAMA_ARG_FLASH_ATTN:-"1"}" \
-    --env "LLAMA_ARG_THREADS=${LLAMA_ARG_THREADS:-"8"}" \
-    --env "LLAMA_ARG_HOST=${LLAMA_ARG_HOST:-"0.0.0.0"}" \
-    --env "LLAMA_ARG_PORT=${LLAMA_ARG_PORT:-"8080"}" \
-    --env "LLAMA_ARG_N_PREDICT=${LLAMA_ARG_N_PREDICT:-"-1"}" \
+    --env "LLAMA_ARG_FLASH_ATTN" \
+    --env "LLAMA_ARG_THREADS" \
+    --env "LLAMA_ARG_HOST" \
+    --env "LLAMA_ARG_PORT" \
+    --env "LLAMA_ARG_N_PREDICT" \
     --env "LLAMA_SERVER_EXTRA_OPTIONS" \
     --publish 8080:8080 \
     --name "${DOCKER_CONTAINER_NAME}" \
