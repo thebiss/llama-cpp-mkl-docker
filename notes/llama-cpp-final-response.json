@@ -1,0 +1,28 @@
+{
+    "choices": [
+        {
+            "finish_reason": "stop",
+            "index": 0,
+            "delta": {}
+        }
+    ],
+    "created": 1733867772,
+    "id": "chatcmpl-a4wANMZYD77ozPM47FJ4onGOMoosRL2l",
+    "model": "gpt-3.5-turbo-0613",
+    "object": "chat.completion.chunk",
+    "usage": {
+        "completion_tokens": 313,
+        "prompt_tokens": 588,
+        "total_tokens": 901
+    },
+    "timings": {
+        "prompt_n": 480,
+        "prompt_ms": 55615.877,
+        "prompt_per_token_ms": 115.86641041666667,
+        "prompt_per_second": 8.630628983878111,
+        "predicted_n": 313,
+        "predicted_ms": 85455.797,
+        "predicted_per_token_ms": 273.0217156549521,
+        "predicted_per_second": 3.662712314297414
+    }
+}
