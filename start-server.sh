@@ -75,6 +75,8 @@ DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-mkl-optimized"}
 # - set by the initizationization above
 # - set with defaults in settings.sh
 # - unset
+export $(compgen -v LLAMA_ARG_)
+export LLAMA_SERVER_EXTRA_OPTIONS
 
 set -x
 docker run \
