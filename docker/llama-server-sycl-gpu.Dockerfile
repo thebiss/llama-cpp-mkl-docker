@@ -2,7 +2,6 @@
 ## Build a llama.cpp instance that uses Intel SYCL GPU acceleration
 ##
 ARG ONEAPI_VERSION=2025.0.0-0-devel-ubuntu22.04
-# ARG ONEAPI_VERSION=2024.2.1-0-devel-ubuntu22.04
 
 ##
 ## Build Stage
@@ -27,7 +26,8 @@ WORKDIR /home/llamauser/git
 
 # You can skip this step if  in oneapi-basekit docker image, only required for manual installation
 # source /opt/intel/oneapi/setvars.sh 
-RUN cmake -B build -DGGML_SYCL=ON -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_DEBUG=ON -DGGML_SYCL_F16=ON
+# Added tiger lake device architecture.  very machine specific.
+RUN cmake -B build -DGGML_SYCL=ON -DGGML_SYCL_TARGET=INTEL -DGGML_CYCL_DEVICE_ARCH=tgl -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_DEBUG=ON -DGGML_SYCL_F16=ON
 
 RUN cmake --build build -j $(nproc) \
     --config Release \
@@ -53,8 +53,8 @@ RUN apt update
 # Install drivers
 RUN apt-get install -y \
     intel-opencl-icd \
-    intel-level-zero-gpu \
     intel-media-va-driver-non-free
+#    intel-level-zero-gpu
 
 # install utils
 RUN apt-get install -y \

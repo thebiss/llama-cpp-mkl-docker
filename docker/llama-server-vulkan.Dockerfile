@@ -72,9 +72,8 @@ WORKDIR /home/llamauser/git
 
 
 # Build it
-RUN cmake -B build -DGGML_VULKAN=1 -DLLAMA_CURL=1 
-
-RUN cmake --build build -j $(nproc) \
+RUN cmake -B build -DGGML_NATIVE=OFF -DGGML_VULKAN=1 -DLLAMA_CURL=1 && \
+    cmake --build build -j $(nproc) \
     --config Release \
     --target llama-server \
     --target llama-gguf \
@@ -97,7 +96,7 @@ COPY --chown=llamauser:llamauser ./src/* ./
 ## Run phase
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
 ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
-ENV LLAMA_ARG_N_GPU_LAYERS="99"
+ENV LLAMA_ARG_N_GPU_LAYERS="33"
 
 ARG LLAMACPP_VERSION_TAG
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
