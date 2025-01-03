@@ -1,7 +1,7 @@
 ##
 ## Build a llama.cpp instance that uses Intel SYCL GPU acceleration
 ##
-ARG ONEAPI_VERSION=2025.0.0-0-devel-ubuntu22.04
+ARG ONEAPI_VERSION=2025.0.1-0-devel-ubuntu22.04
 
 ##
 ## Build Stage
@@ -21,7 +21,10 @@ RUN if [ -z "$LLAMACPP_VERSION_TAG" ]; then \
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 # Fetch from repo
-ADD --chown=1010:1010 --keep-git-dir=true https://github.com/ggerganov/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
+# Fetch from repo
+# ADD --chown=1010:1010 https://github.com/ggerganov/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
+# podman buildah doesn't support GIT URL special handling
+RUN git clone --depth 1 --branch ${LLAMACPP_VERSION_TAG} https://github.com/ggerganov/llama.cpp.git git
 WORKDIR /home/llamauser/git
 
 # You can skip this step if  in oneapi-basekit docker image, only required for manual installation
