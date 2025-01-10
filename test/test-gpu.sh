@@ -11,7 +11,7 @@
 # free buffers
 ../cleanup-wsl-cache.sh
 
-MODELDIR="$(realpath ../../models)"
+MODELDIR="$(realpath $HOME/models)"
 
 # 7 Nov -remove extraneous mounts and vars
 

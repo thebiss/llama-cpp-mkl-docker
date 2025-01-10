@@ -2,12 +2,12 @@
 
 # Build LLAMACPP release tag...
 # LLAMACPP_VER=b4295
-LLAMACPP_VER=b4399
+LLAMACPP_VER=b4453
 TIME_NOW_MINS="$(date -Iminutes | sed 's/\://g')"
 
 # Default model to run
 # MODEL_DEFAULT="../models/mistralai/mistral-v0.3/Mistral-7B-Instruct-v0.3-Q5_K_M.gguf"
-MODEL_HOME="${HOME}/dev-in-wsl/models"
+MODEL_HOME="${HOME}/models"
 MODEL_DEFAULT="${MODEL_HOME}/ibm/granite-3.0/granite-3.0-8b-instruct-Q6_K.gguf"
 
 # LLAMA-SERVER defaults settings, as environment variables
