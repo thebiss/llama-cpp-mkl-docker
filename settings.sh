@@ -2,7 +2,7 @@
 
 # Build LLAMACPP release tag...
 # LLAMACPP_VER=b4295
-LLAMACPP_VER=b4453
+LLAMACPP_VER=b4466
 TIME_NOW_MINS="$(date -Iminutes | sed 's/\://g')"
 
 # Default model to run
