@@ -13,9 +13,9 @@ set -euo pipefail
 source ./docker/src/stdbash.sh
 
 # Expectations
-[ -z "${DOCKERFILE:-}" ] && stdbash::error "DOCKERFILE variable must contain the name dockerfile definition to build from"
-[ -z "${IMAGENAME:-}" ] && stdbash::error "IMAGENAME variable must contain the full container image name (repo/name)"
-[ -z "${LLAMACPP_VER:-}" ] && stdbash::error "LLAMACPP_VER variable must contain release tag"
+[ -z "${DOCKERFILE:-}" ]    && stdbash::error "DOCKERFILE variable must contain the name dockerfile definition to build from"
+[ -z "${IMAGENAME:-}" ]     && stdbash::error "IMAGENAME variable must contain the full container image name (repo/name)"
+[ -z "${LLAMACPP_VER:-}" ]  && stdbash::error "LLAMACPP_VER variable must contain release tag"
 
 # 
 # IMAGENAME="thebiss/${IMAGE}"

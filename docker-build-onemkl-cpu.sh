@@ -2,8 +2,7 @@
 
 source ./settings.sh
 
-LLAMACPP_VER=${LLAMACPP_VER:-}
-DOCKERFILE=llama-server-onemkl-cpu.Dockerfile
+DOCKERFILE=llama-server-cpu-onemkl.Dockerfile
 IMAGENAME=thebiss/llama-cpp-mkl
 
 source ./docker-build-common.sh

@@ -16,3 +16,8 @@ function stdbash::warn
 {
     [ $# -gt 0 ] && printf "$(date -Isec -u) ${_HOSTNAME} ${_THIS}\tWARNING: ${@:1}\n"
 }
+
+function stdbash::info
+{
+    [ $# -gt 0 ] && printf "$(date -Isec -u) ${_HOSTNAME} ${_THIS}\tINFO: ${@:1}\n"
+}

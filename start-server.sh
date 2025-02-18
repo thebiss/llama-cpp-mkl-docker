@@ -11,6 +11,22 @@ source ./docker/src/stdbash.sh
 
 
 ##
+##
+TMP_FILE=""
+_atexit() {
+    set +x
+    local _exit_code=$?
+    [ -f "${TMP_FILE}" ] && rm -vf "${TMP_FILE}"
+
+    ./cleanup-wsl-cache.sh
+
+    exit $_exit_code
+}
+trap _atexit EXIT
+trap _atexit SIGINT SIGTERM SIGQUIT
+
+
+##
 ## Main
 ##
 
@@ -45,12 +61,12 @@ _MODEL_GGUF=$(realpath ${_MODEL_GGUF})
 _MODEL_GGUF_FILENAME=$(basename "${_MODEL_GGUF}")
 _MODEL_GGUF_DIRNAME=$(dirname "${_MODEL_GGUF}")
 
-echo "Using model ${_MODEL_GGUF_FILENAME} from ${_MODEL_GGUF_DIRNAME}"
+stdbash::info "Using model ${_MODEL_GGUF_FILENAME} from ${_MODEL_GGUF_DIRNAME}"
 [ -n "`which figlet`"  ] && figlet -w 120 "${_MODEL_GGUF_FILENAME}"
 
 _CONTAINER_MODEL_HOME="/var/models"
 _CONTAINER_MODEL_ABS="${_CONTAINER_MODEL_HOME}/${_MODEL_GGUF_FILENAME}"
-
+LLAMA_ARG_MODEL="${_CONTAINER_MODEL_ABS}"
 
 #
 # CONTAINER SETUP
@@ -66,33 +82,37 @@ DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-mkl-optimized"}
 # On ubuntu on WSL, open a browser
 [ $(which sensible-browser) ] && sensible-browser http://localhost:8080
 
+##
+## Run the container
+##
+
 #
-# Run the container
+# Environment Variables - Pass via a .env file
 #
 
-# Env vars are either:
-# - set by wrapping scripts
-# - set by the initizationization above
-# - set with defaults in settings.sh
-# - unset
+# Export anything set with the name LLAMA_ARG or LLAMA_SERVER, from:
+# - wrapping scripts
+# - the initizationization above
+# - defaults in settings.sh
 export $(compgen -v LLAMA_ARG_)
 export LLAMA_SERVER_EXTRA_OPTIONS
 
+
+# create envfile
+TMP_FILE="$(mktemp --tmpdir tmp.llamaserver.XXXXX.env)"
+stdbash::info "Passing environment via ${TMP_FILE}."
+env | grep -e '^LLAMA_ARG_' -e '^LLAMA_SERVER_' | sort > "${TMP_FILE}"
+
+#
 set -x
 docker run \
     -it \
     --rm \
     --volume "${_MODEL_GGUF_DIRNAME}:${_CONTAINER_MODEL_HOME}:ro" \
     ${DOCKER_RUN_ARGS} \
-    --env "LLAMA_ARG_MODEL=${_CONTAINER_MODEL_ABS}" \
-    --env "LLAMA_ARG_CTX_SIZE" \
-    --env "LLAMA_ARG_FLASH_ATTN" \
-    --env "LLAMA_ARG_THREADS" \
-    --env "LLAMA_ARG_HOST" \
-    --env "LLAMA_ARG_PORT" \
-    --env "LLAMA_ARG_N_PREDICT" \
-    --env "LLAMA_SERVER_EXTRA_OPTIONS" \
+    --env-file "${TMP_FILE}" \
     --publish 8080:8080 \
     --name "${DOCKER_CONTAINER_NAME}" \
     ${DOCKER_IMAGE_NAME}
 set +x
+

@@ -60,31 +60,33 @@ WORKDIR /home/llamauser
 
 ## Pull source
 ARG LLAMACPP_VERSION_TAG
-RUN if [ -z "$LLAMACPP_VERSION_TAG" ]; then \
-    echo "Error: arg LLAMACPP_VERSION_TAG must be set." && exit 1; \
-    fi
+RUN if [ -z "$LLAMACPP_VERSION_TAG" ]; then echo "Error: arg LLAMACPP_VERSION_TAG must be set." && exit 1; fi
+
 
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 # Fetch from repo
-# ADD --chown=1010:1010 https://github.com/ggerganov/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
+# ADD --chown=1010:1010 https://github.com/ggml-org/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
 # podman buildah doesn't support GIT URL special handling
-RUN git clone --depth 1 --branch ${LLAMACPP_VERSION_TAG} https://github.com/ggerganov/llama.cpp.git git
+RUN git clone -c advice.detachedHead=false --depth 1 --branch ${LLAMACPP_VERSION_TAG} https://github.com/ggml-org/llama.cpp.git git
 WORKDIR /home/llamauser/git
 
 
 # Build it
 RUN cmake -B build -DGGML_NATIVE=OFF -DGGML_VULKAN=1 -DLLAMA_CURL=1 && \
     cmake --build build -j $(nproc) \
-    --config Release \
-    --target llama-server \
-    --target llama-gguf \
-    --target llama-bench \
-    --target test-backend-ops \
-    --target llama-cli
+    --config Release 
+    
+## Build all targets
+#    \
+#    --target llama-server \
+#    --target llama-gguf \
+#    --target llama-bench \
+#    --target test-backend-ops \
+#    --target llama-cli
 
-# cleanup ahead of the runtime copy
-RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
+## cleanup ahead of the runtime copy
+# RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
 
 
 ##

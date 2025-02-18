@@ -2,8 +2,7 @@
 
 source ./settings.sh
 
-LLAMACPP_VER=${LLAMACPP_VER:-}
-DOCKERFILE=llama-server-vulkan.Dockerfile
+DOCKERFILE=llama-server-gpu-vulkan.Dockerfile
 IMAGENAME=thebiss/llama-cpp-vulkan
 
 source ./docker-build-common.sh

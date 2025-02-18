@@ -13,37 +13,36 @@ USER 1010:1010
 WORKDIR /home/llamauser
 
 ARG LLAMACPP_VERSION_TAG
-RUN if [ -z "$LLAMACPP_VERSION_TAG" ]; then \
-    echo "Error: arg LLAMACPP_VERSION_TAG must be set." && exit 1; \
-    fi
-
+RUN if [ -z "$LLAMACPP_VERSION_TAG" ]; then echo "Error: arg LLAMACPP_VERSION_TAG must be set." && exit 1; fi
 
 ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
 
 # Fetch from repo
-# Fetch from repo
-# ADD --chown=1010:1010 https://github.com/ggerganov/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
+# ADD --chown=1010:1010 https://github.com/ggml-org/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
 # podman buildah doesn't support GIT URL special handling
-RUN git clone --depth 1 --branch ${LLAMACPP_VERSION_TAG} https://github.com/ggerganov/llama.cpp.git git
+RUN git clone -c advice.detachedHead=false -q --depth 1 --branch ${LLAMACPP_VERSION_TAG} https://github.com/ggml-org/llama.cpp.git git
 WORKDIR /home/llamauser/git
 
-# You can skip this step if  in oneapi-basekit docker image, only required for manual installation
-# source /opt/intel/oneapi/setvars.sh 
-# Added tiger lake device architecture.  very machine specific.
-RUN cmake -B build -DGGML_SYCL=ON -DGGML_SYCL_TARGET=INTEL -DGGML_CYCL_DEVICE_ARCH=tgl -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_DEBUG=ON -DGGML_SYCL_F16=ON
+## Added tiger lake device architecture.  very machine specific.
+# 19 Jan - removed due to warnings they were unused: -DGGML_CYCL_DEVICE_ARCH=tgl -DGGML_SYCL_DEBUG=ON 
+RUN cmake -B build -DGGML_SYCL=ON -DGGML_SYCL_TARGET=INTEL -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_F16=ON
 
 RUN cmake --build build -j $(nproc) \
-    --config Release \
-    --target llama-server \
-    --target llama-gguf \
-    --target llama-bench \
-    --target llama-ls-sycl-device \
-    --target test-backend-ops \
-    --target llama-cli
+    --config Release
+    
+## Make all targets
+#     \
+#    --target llama-server \
+#    --target llama-gguf \
+#    --target llama-bench \
+#    --target llama-ls-sycl-device \
+#    --target test-backend-ops \
+#    --target llama-cli
 
 
-# cleanup ahead of the runtime copy
-RUN find ./ \( -name '*.o' -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' \) -print -delete
+## cleanup ahead of the runtime copy
+RUN find ./ \( -name '*.o' \) -print -delete
+# -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' 
 
 ##
 ## Runtime
