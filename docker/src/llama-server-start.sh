@@ -17,10 +17,6 @@ export LLAMA_ARG_MODEL
 ##
 ## Engine
 ##
-#
-LLAMA_SERVER_BIN=${LLAMA_SERVER_BIN:-""}
-[ -z "${LLAMA_SERVER_BIN}" ] && stdbash::error 'Unknown llama-server.  Set $LLAMA_SERVER_BIN to path.'
-
 
 ## PROMPT
 # not supported by server?
@@ -29,12 +25,15 @@ LLAMA_SERVER_BIN=${LLAMA_SERVER_BIN:-""}
 ##
 ## "MAIN"
 ##
-[ -n "`which figlet`"  ] && figlet -w 120 "=> LLAMA-SERVER ${LLAMACPP_VERSION}"
+[ -n "`which figlet`"  ] && figlet -w 120 "=> LLAMA-SERVER ${LLAMA_CPP_VERSION}"
 
 printf '\nENVIRONMENT (LLAMA_*):\n'
 env | grep 'LLAMA_' | sort | sed 's/^/  /'
 printf "\n"
 
+# prevent core dumps due to ^C bug
+ulimit -c 0
+
 set -x
-${LLAMA_SERVER_BIN} ${LLAMA_SERVER_EXTRA_OPTIONS:-}
+llama-server ${LLAMA_CPP_EXTRA_OPTIONS:-}
 

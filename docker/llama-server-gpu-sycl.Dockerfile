@@ -1,48 +1,52 @@
 ##
 ## Build a llama.cpp instance that uses Intel SYCL GPU acceleration
 ##
-ARG ONEAPI_VERSION=2025.0.1-0-devel-ubuntu22.04
+ARG ONEAPI_VERSION=2025.1.1-0-devel-ubuntu24.04
+
+
+##
+## Fetch stage
+##
+FROM alpine:latest as SOURCE
+RUN apk add --no-cache git
+
+ARG LLAMA_CPP_VERSION_TAG
+ENV LLAMA_CPP_VERSION=${LLAMA_CPP_VERSION_TAG}
+RUN if [ -z "$LLAMA_CPP_VERSION_TAG" ]; then echo "Error: arg LLAMA_CPP_VERSION_TAG must be set." && exit 1; fi
+
+# Fetch from repo
+# ADD --chown=1010:1010 https://github.com/ggml-org/llama.cpp.git#${LLAMA_CPP_VERSION_TAG} git
+# podman buildah doesn't support GIT URL special handling
+RUN cd /tmp && \
+    git clone -c advice.detachedHead=false -q --depth 1 --branch ${LLAMA_CPP_VERSION_TAG} https://github.com/ggml-org/llama.cpp.git git
+
+
 
 ##
 ## Build Stage
 ##
 FROM intel/oneapi-basekit:${ONEAPI_VERSION} AS build
 
+RUN apt-get update && apt-get -y install libcurl4-openssl-dev
+
 RUN useradd -m --uid 1010 llamauser
 USER 1010:1010
 WORKDIR /home/llamauser
 
-ARG LLAMACPP_VERSION_TAG
-RUN if [ -z "$LLAMACPP_VERSION_TAG" ]; then echo "Error: arg LLAMACPP_VERSION_TAG must be set." && exit 1; fi
-
-ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
-
-# Fetch from repo
-# ADD --chown=1010:1010 https://github.com/ggml-org/llama.cpp.git#${LLAMACPP_VERSION_TAG} git
-# podman buildah doesn't support GIT URL special handling
-RUN git clone -c advice.detachedHead=false -q --depth 1 --branch ${LLAMACPP_VERSION_TAG} https://github.com/ggml-org/llama.cpp.git git
+COPY --from=SOURCE --chown=1010:1010 /tmp/git ./git
 WORKDIR /home/llamauser/git
 
-## Added tiger lake device architecture.  very machine specific.
-# 19 Jan - removed due to warnings they were unused: -DGGML_CYCL_DEVICE_ARCH=tgl -DGGML_SYCL_DEBUG=ON 
-RUN cmake -B build -DGGML_SYCL=ON -DGGML_SYCL_TARGET=INTEL -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_F16=ON
+# Make
+# 17 May 2025 - Updated to align with latest devops docker file CLI
+RUN cmake -B build -DGGML_NATIVE=OFF -DGGML_SYCL=ON \
+    -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx \
+    -DGGML_BACKEND_DL=ON -DGGML_CPU_ALL_VARIANTS=ON -DGGML_SYCL_F16=ON
 
 RUN cmake --build build -j $(nproc) \
     --config Release
     
-## Make all targets
-#     \
-#    --target llama-server \
-#    --target llama-gguf \
-#    --target llama-bench \
-#    --target llama-ls-sycl-device \
-#    --target test-backend-ops \
-#    --target llama-cli
-
-
-## cleanup ahead of the runtime copy
-RUN find ./ \( -name '*.o' \) -print -delete
-# -o -name '*.cpp' -o -name '*.c' -o -name '*.cu?' -o -name '*.hpp' -o -name '*.h' -o -name '*.comp' 
+# cleanup ahead of the runtime copy
+RUN find ./ \( -name '*.o' \) -delete
 
 ##
 ## Runtime
@@ -50,16 +54,12 @@ RUN find ./ \( -name '*.o' \) -print -delete
 # FROM intel/oneapi-runtime:${ONEAPI_VERSION} AS runtime
 FROM intel/oneapi-basekit:${ONEAPI_VERSION} AS runtime
 
-RUN apt update
 
 # Install drivers
-RUN apt-get install -y \
+# Install Utils
+RUN apt-get update && apt-get install -y \
     intel-opencl-icd \
-    intel-media-va-driver-non-free
-#    intel-level-zero-gpu
-
-# install utils
-RUN apt-get install -y \
+    intel-media-va-driver-non-free \
     clinfo \
     strace \
     sudo
@@ -93,23 +93,24 @@ ENV ZES_ENABLE_SYSMAN=1
 #
 ENV SYCL_CACHE_PERSISTENT=1
 # [optional] under most circumstances, the following environment variable may improve performance, but sometimes this may also cause performance degradation
-ENV SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
+# ENV SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1
 
 
-# lf gets the bin name from LLAMA_SERVER_BIN
+# lf gets the bin name from LLAMA_CPP_BIN
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
-ENV LLAMA_SERVER_BIN="${LLAMA_PATH}/llama-server"
 ENV LLAMA_ARG_N_GPU_LAYERS="99"
 
-ARG LLAMACPP_VERSION_TAG
-ENV LLAMACPP_VERSION=${LLAMACPP_VERSION_TAG}
+ARG LLAMA_CPP_VERSION_TAG
+ENV LLAMA_CPP_VERSION=${LLAMA_CPP_VERSION_TAG}
 
-RUN echo 'PATH="${LLAMA_PATH}:${PATH}"' >> .bashrc
-RUN echo 'PS1="\n(llama.cpp rel $LLAMACPP_VERSION for SYCL)\n$PS1"' >> .bashrc
+ENV LLAMA_BUILDER="SYCL"
+
 
 # Models: mount externally
-ENV _MODELHOME="/var/models"
-VOLUME [ "${_MODELHOME}" ]
+
+VOLUME [ "/var/models" ]
 EXPOSE 8080
 
-CMD ["/bin/bash","llama-server-start.sh"]
+# Run the command in a login shell
+CMD ["/bin/bash","--login","-i","-c","/home/llamauser/llama-server-start.sh"]
+

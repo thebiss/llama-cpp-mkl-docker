@@ -11,13 +11,16 @@
 # free buffers
 ../cleanup-wsl-cache.sh
 
-MODELDIR="$(realpath $HOME/models)"
-MODELNAME="ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf"
+source test-settings.sh
+export LLAMA_ARG_MODEL="/models/${MODELNAME}"
 
 set -x
 docker run -p 8080:8080 \
-    --volume "${MODELDIR}:/models:ro" \
-    ghcr.io/ggerganov/llama.cpp:server-intel \
-    -m "/models/${MODELNAME}" \
     --host 0.0.0.0 \
-    --port 8080
+    --port 8080 \
+    \
+    --volume "${MODELDIR}:/models:ro" \
+    --env "LLAMA_BENCH_OPTS" \
+    --env "LLAMA_ARG_MODEL" \
+    --name "test-llamacpp-gg" \
+    ghcr.io/ggerganov/llama.cpp:server-intel

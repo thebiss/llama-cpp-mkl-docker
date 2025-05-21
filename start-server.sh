@@ -76,7 +76,8 @@ LLAMA_ARG_MODEL="${_CONTAINER_MODEL_ABS}"
 # set to add additional flags, envs, and devices at start
 DOCKER_RUN_ARGS=${DOCKER_RUN_ARGS:-""}
 DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME:-"thebiss/llama-cpp-mkl:latest"}
-DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-mkl-optimized"}
+DOCKER_IMAGE_COMMAND=${DOCKER_IMAGE_COMMAND:-""}
+DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-pod"}
 
 
 # On ubuntu on WSL, open a browser
@@ -90,18 +91,18 @@ DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-mkl-optimized"}
 # Environment Variables - Pass via a .env file
 #
 
-# Export anything set with the name LLAMA_ARG or LLAMA_SERVER, from:
+# Export anything set with the name LLAMA_ARG or LLAMA_CPP, from:
 # - wrapping scripts
 # - the initizationization above
 # - defaults in settings.sh
 export $(compgen -v LLAMA_ARG_)
-export LLAMA_SERVER_EXTRA_OPTIONS
+export $(compgen -v LLAMA_CPP_)
 
 
 # create envfile
 TMP_FILE="$(mktemp --tmpdir tmp.llamaserver.XXXXX.env)"
 stdbash::info "Passing environment via ${TMP_FILE}."
-env | grep -e '^LLAMA_ARG_' -e '^LLAMA_SERVER_' | sort > "${TMP_FILE}"
+env | grep -e '^LLAMA_ARG_' -e '^LLAMA_CPP_' | sort > "${TMP_FILE}"
 
 #
 set -x
@@ -109,10 +110,11 @@ docker run \
     -it \
     --rm \
     --volume "${_MODEL_GGUF_DIRNAME}:${_CONTAINER_MODEL_HOME}:ro" \
+    --volume "${HOME}/.cache/llama.cpp:/home/llamauser/.cache/llama.cpp:rw" \
     ${DOCKER_RUN_ARGS} \
     --env-file "${TMP_FILE}" \
-    --publish 8080:8080 \
+    --publish "8080:${LLAMA_ARG_PORT}" \
     --name "${DOCKER_CONTAINER_NAME}" \
-    ${DOCKER_IMAGE_NAME}
+    ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_COMMAND}
 set +x
 

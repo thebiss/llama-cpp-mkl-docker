@@ -11,7 +11,7 @@ Once warm, Mistral achieves ~6.8 tokens/second on Intel Core(TM) i5-1135G7 @ 2.4
 
 ## Step 1: Build the container
 
-Run `docker-build.sh`, where the `LLAMACPP_VER` variable is set to the preferred release tag. 
+Run `docker-build.sh`, where the `LLAMA_CPP_VERSION` variable is set to the preferred release tag. 
 
 ### Option 1: Use the default commit
 ```bash
@@ -20,7 +20,7 @@ Run `docker-build.sh`, where the `LLAMACPP_VER` variable is set to the preferred
 
 ### Option 2: Use a specific commit
 ```bash
-export LLAMACPP_VER=b3472 && ./docker-build.sh
+export LLAMA_CPP_VERSION=b3472 && ./docker-build.sh
 ```
 
 

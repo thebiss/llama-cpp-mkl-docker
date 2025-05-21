@@ -43,12 +43,12 @@ llamauser@04c6ce7aeee5:~$
 # from parent shell
 ./test-gpu.sh
 # from container shell
-$LLAMA_SERVER_BIN -m /var/models/ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf -c 4096 --host 0.0.0.0 -ngl 99
+$LLAMA_CPP_BIN -m /var/models/ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf -c 4096 --host 0.0.0.0 -ngl 99
 ```
 
 ## Output
 ```
-llamauser@04c6ce7aeee5:~$ $LLAMA_SERVER_BIN -m /var/models/ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf -c 4096 --host 0.0.0.0 -ngl
+llamauser@04c6ce7aeee5:~$ $LLAMA_CPP_BIN -m /var/models/ibm/granite-3.0/granite-3.0-8b-instruct-Q4_K_M.gguf -c 4096 --host 0.0.0.0 -ngl
 99
 ggml_sycl_init: GGML_SYCL_FORCE_MMQ:   no
 ggml_sycl_init: SYCL_USE_XMX: yes

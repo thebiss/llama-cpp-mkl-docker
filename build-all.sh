@@ -2,6 +2,6 @@
 set -euo pipefail
 
 
-./docker-build-onemkl-cpu.sh
-./docker-build-sycl-gpu.sh
-./docker-build-vulkan.sh
+./docker-build-cpu-onemkl.sh
+./docker-build-gpu-sycl.sh
+./docker-build-gpu-vulkan.sh

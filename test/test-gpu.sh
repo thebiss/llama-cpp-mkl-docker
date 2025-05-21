@@ -11,21 +11,20 @@
 # free buffers
 ../cleanup-wsl-cache.sh
 
-MODELDIR="$(realpath $HOME/models)"
+source test-settings.sh
 
 # 7 Nov -remove extraneous mounts and vars
 
 # Run the container
-set -x
-docker run -it --rm \
+DOCKER_RUN_ARGS="\
     --device=/dev/dxg \
     --device=/dev/dri/card0 \
     --device=/dev/dri/renderD128 \
-    -v /usr/lib/wsl:/usr/lib/wsl \
-    \
-    --publish 8080:8080 \
-    --volume "${MODELDIR}:/var/models:ro" \
-    thebiss/llama-cpp-mkl-gpu:latest \
-    /bin/bash
+    --volume /usr/lib/wsl:/usr/lib/wsl"
+    
+DOCKER_IMAGE_NAME="thebiss/llama-cpp-mkl-gpu:latest"
+DOCKER_IMAGE_COMMAND="/bin/bash"
 
-    # -v /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri \
+pushd ..
+source ./start-server.sh
+popd

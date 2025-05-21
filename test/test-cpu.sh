@@ -3,14 +3,11 @@
 # free buffers
 ../cleanup-wsl-cache.sh
 
-MODELDIR="$(realpath $HOME/models)"
+source test-settings.sh
 
-# Run the container
-set -x
-docker run -it --rm \
-    --name "test-llama-cpp-intelmkl" \
-    --volume "${MODELDIR}:/var/models:ro" \
-    --env LLAMA_BENCH_OPTS="--threads 8" \
-    thebiss/llama-cpp-mkl:latest \
-    /bin/bash
+DOCKER_IMAGE_COMMAND="/bin/bash"
+
+pushd ..
+source start-server.sh
+popd
 

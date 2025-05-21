@@ -1,0 +1,4 @@
+
+LLAMA_BUILDER=${LLAMA_BUILDER:-""}
+PATH="${LLAMA_PATH}:${PATH}"
+PS1="\n(llama.cpp rel $LLAMA_CPP_VERSION with ${LLAMA_BUILDER})\n$PS1"
