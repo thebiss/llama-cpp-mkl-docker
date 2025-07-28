@@ -19,8 +19,6 @@ source test-settings.sh
 
 DOCKER_RUN_ARGS="\
     --device=/dev/dxg \
-    --device=/dev/dri/card0 \
-    --device=/dev/dri/renderD128 \
     --group-add video \
     --env DISPLAY \
     --env WAYLAND_DISPLAY \
@@ -32,7 +30,7 @@ DOCKER_RUN_ARGS="\
     --volume /usr/lib/wsl:/usr/lib/wsl \
     --volume /usr/lib/x86_64-linux-gnu/dri:/usr/lib/x86_64-linux-gnu/dri"
 
-DOCKER_IMAGE_NAME="thebiss/llama-cpp-vulkan:latest"
+DOCKER_IMAGE_NAME="localhost/thebiss/llama-cpp-vulkan:latest"
 DOCKER_IMAGE_COMMAND="/bin/bash"
 
 pushd ..

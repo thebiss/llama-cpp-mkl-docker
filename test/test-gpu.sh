@@ -18,11 +18,9 @@ source test-settings.sh
 # Run the container
 DOCKER_RUN_ARGS="\
     --device=/dev/dxg \
-    --device=/dev/dri/card0 \
-    --device=/dev/dri/renderD128 \
     --volume /usr/lib/wsl:/usr/lib/wsl"
     
-DOCKER_IMAGE_NAME="thebiss/llama-cpp-mkl-gpu:latest"
+DOCKER_IMAGE_NAME="localhost/thebiss/llama-cpp-mkl-gpu:latest"
 DOCKER_IMAGE_COMMAND="/bin/bash"
 
 pushd ..
