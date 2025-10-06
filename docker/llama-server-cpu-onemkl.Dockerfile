@@ -1,14 +1,13 @@
 ##
 ## Build a llama.cpp instance that uses Intel One MKL CPU acceleration
 ##
-ARG ONEAPI_VERSION=2025.1.1-0-devel-ubuntu24.04
-
+ARG ONEAPI_VERSION=2025.2.2-0-devel-ubuntu24.04
+ARG ALPINE_VERSION=v2.49.1
 
 ##
 ## Fetch stage
 ##
-FROM alpine:latest as SOURCE
-RUN apk add --no-cache git
+FROM alpine/git:${ALPINE_VERSION} as SOURCE
 
 ARG LLAMA_CPP_VERSION_TAG
 ENV LLAMA_CPP_VERSION=${LLAMA_CPP_VERSION_TAG}
@@ -37,12 +36,14 @@ COPY --from=SOURCE --chown=1010:1010 /tmp/git ./git
 WORKDIR /home/llamauser/git
 
 # Make
-RUN cmake -B build -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=Intel10_64lp -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_NATIVE=ON
+# 25 July 2025 - https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md#intel-onemkl
+RUN cmake -B build -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DLLAMA_BUILD_TESTS=OFF \
+    -DGGML_BLAS=ON -DGGML_BLAS_VENDOR=Intel10_64lp -DGGML_NATIVE=ON
 
 RUN cmake --build build -j $(nproc) \
     --config Release
 
-## cleanup ahead of the runtime copy
+# cleanup ahead of the runtime copy
 RUN find ./ \( -name '*.o' \) -delete
 
 
@@ -52,6 +53,19 @@ RUN find ./ \( -name '*.o' \) -delete
 ##
 FROM intel/oneapi-runtime:${ONEAPI_VERSION} AS runtime
 
+
+
+# Install drivers
+# Install Utils
+RUN apt-get update && apt-get install -y \
+    intel-media-va-driver-non-free \
+    clinfo \
+    strace \
+    sudo
+
+
+
+
 RUN useradd -m --uid 1010 llamauser
 USER 1010:1010
 WORKDIR /home/llamauser
@@ -60,7 +74,7 @@ COPY --from=build /home/llamauser/git ./git
 COPY --chown=llamauser:llamauser ./src/* ./
 
 ## Run phase
-
+ENV MODEL_DIR="/var/models"
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
 
 ARG LLAMA_CPP_VERSION_TAG
@@ -72,7 +86,7 @@ ENV LLAMA_BUILDER="Intel OneMKL"
 
 # mount models externally
 
-VOLUME [ "/var/models" ]
+VOLUME [ "${MODEL_DIR}" ]
 EXPOSE 8080
 
 # Run the command in a login shell

@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 set -euo pipefail
 
-source stdbash.sh
+source lib/libbbash.sh
 
 ##
 ## MODELS
@@ -9,8 +9,10 @@ source stdbash.sh
 
 #
 LLAMA_ARG_MODEL=${LLAMA_ARG_MODEL:-""}
-[ -z "${LLAMA_ARG_MODEL}" ] && stdbash::error 'Unknown model.  Set $LLAMA_ARG_MODEL to absolute path to model file gguf.'
-[ -f "${LLAMA_ARG_MODEL}" ] || stdbash::error "Cannot access model file" "${LLAMA_ARG_MODEL}" "`ls -al ${LLAMA_ARG_MODEL}`"
+LLAMA_ARG_MODEL="${MODEL_DIR}/${LLAMA_ARG_MODEL}"
+
+[ -z "${LLAMA_ARG_MODEL}" ] && stdbash::error 'Unknown model. Set $LLAMA_ARG_MODEL to absolute path to model file gguf.'
+[ -f "${LLAMA_ARG_MODEL}" ] || stdbash::error "Cannot access model file: " "${LLAMA_ARG_MODEL}" "`ls -al ${LLAMA_ARG_MODEL}`"
 export LLAMA_ARG_MODEL
 
 

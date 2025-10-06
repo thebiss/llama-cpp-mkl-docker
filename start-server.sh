@@ -6,8 +6,11 @@
 ##
 set -euo pipefail
 
+set -x
+
+
 # Import misc bash tools
-source ./docker/src/stdbash.sh
+source lib/libbbash.sh
 
 
 ##
@@ -40,33 +43,29 @@ source ./settings.sh
 # Model Filename - Check and Demangle
 #
 
-# Use model in param 1, if set
+## Modelfile name passed - use that
+## Otherwise, use $MODEL_HOME and $LLAMA_ARG_MODEL
+
 [ $# -gt 0 ] && _MODEL_GGUF="${1}"
-_MODEL_GGUF=${_MODEL_GGUF:-""}
-
-# If model not set, use the default
-if [ -z "${_MODEL_GGUF}" ]; then
-    _MODEL_GGUF="${MODEL_DEFAULT}"
-    stdbash::warn "Using model from settings. Run \"${_THIS} /path/to/model.gguf\" to override."
-fi
-
+_MODEL_GGUF="${_MODEL_GGUF:-$LLAMA_ARG_MODEL}"
 
 # Convert the path to absolute
 _MODEL_GGUF=$(realpath ${_MODEL_GGUF})
 
 # Validate access to file
-[ -f "${_MODEL_GGUF}" ] || stdbash::error "Cannot access model file:" "${_MODEL_GGUF}"
+[ -f "${_MODEL_GGUF}" ] || stdbash::error "Cannot access model file: " "${_MODEL_GGUF}"
 
 # Separate name parts, for mounting
 _MODEL_GGUF_FILENAME=$(basename "${_MODEL_GGUF}")
 _MODEL_GGUF_DIRNAME=$(dirname "${_MODEL_GGUF}")
 
-stdbash::info "Using model ${_MODEL_GGUF_FILENAME} from ${_MODEL_GGUF_DIRNAME}"
-[ -n "`which figlet`"  ] && figlet -w 120 "${_MODEL_GGUF_FILENAME}"
+# Override the defaults
+MODEL_HOME="${_MODEL_GGUF_DIRNAME}"
+LLAMA_ARG_MODEL="${_MODEL_GGUF_FILENAME}"
 
-_CONTAINER_MODEL_HOME="/var/models"
-_CONTAINER_MODEL_ABS="${_CONTAINER_MODEL_HOME}/${_MODEL_GGUF_FILENAME}"
-LLAMA_ARG_MODEL="${_CONTAINER_MODEL_ABS}"
+stdbash::info "Using model ${LLAMA_ARG_MODEL} from ${MODEL_HOME}"
+[ -n "`which figlet`"  ] && figlet -w 120 "${LLAMA_ARG_MODEL}"
+
 
 #
 # CONTAINER SETUP
@@ -75,13 +74,20 @@ LLAMA_ARG_MODEL="${_CONTAINER_MODEL_ABS}"
 
 # set to add additional flags, envs, and devices at start
 DOCKER_RUN_ARGS=${DOCKER_RUN_ARGS:-""}
-DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME:-"thebiss/llama-cpp-mkl:latest"}
+DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME:-"localhost/thebiss/llama-cpp-mkl:latest"}
 DOCKER_IMAGE_COMMAND=${DOCKER_IMAGE_COMMAND:-""}
 DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-pod"}
 
 
-# On ubuntu on WSL, open a browser
-[ $(which sensible-browser) ] && sensible-browser http://localhost:8080
+# Open a browser to the default URL
+#   If the command to do so exists.
+#   If the command-line wasn't set.
+[ $(which sensible-browser) ] && [ -z "${DOCKER_IMAGE_COMMAND}" ] && sensible-browser http://localhost:8080
+
+
+# Cache KV
+LLAMA_CPP_EXTRA_OPTIONS="$LLAMA_CPP_EXTRA_OPTIONS --slot-save-path /home/llamauser/.cache/llama.cpp"
+
 
 ##
 ## Run the container
@@ -95,22 +101,23 @@ DOCKER_CONTAINER_NAME=${DOCKER_CONTAINER_NAME:-"llama-cpp-pod"}
 # - wrapping scripts
 # - the initizationization above
 # - defaults in settings.sh
-export $(compgen -v LLAMA_ARG_)
-export $(compgen -v LLAMA_CPP_)
+export $(compgen -v LLAMA_)
 
 
 # create envfile
 TMP_FILE="$(mktemp --tmpdir tmp.llamaserver.XXXXX.env)"
 stdbash::info "Passing environment via ${TMP_FILE}."
-env | grep -e '^LLAMA_ARG_' -e '^LLAMA_CPP_' | sort > "${TMP_FILE}"
+env | grep -e '^LLAMA_' | sort > "${TMP_FILE}"
+
 
 #
 set -x
 docker run \
     -it \
     --rm \
-    --volume "${_MODEL_GGUF_DIRNAME}:${_CONTAINER_MODEL_HOME}:ro" \
-    --volume "${HOME}/.cache/llama.cpp:/home/llamauser/.cache/llama.cpp:rw" \
+    --replace \
+    --volume "${MODEL_HOME}:${_CONTAINER_MODEL_HOME}:ro" \
+    --volume "${HOME}/.cache/llama.cpp:/home/llamauser/.cache/llama.cpp:rw,idmap" \
     ${DOCKER_RUN_ARGS} \
     --env-file "${TMP_FILE}" \
     --publish "8080:${LLAMA_ARG_PORT}" \

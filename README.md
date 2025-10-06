@@ -60,3 +60,8 @@ The work around is to [force it to be freed. (Kernel docs)](https://www.kernel.o
 ### Fix part two: Drop caches between runs
 - Run: `echo 1 | sudo tee /proc/sys/vm/drop_caches` after _every  run_.
 
+
+
+
+## Missing /dev/dri
+sudo modprobe vgem

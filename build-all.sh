@@ -4,4 +4,6 @@ set -euo pipefail
 
 ./docker-build-cpu-onemkl.sh
 ./docker-build-gpu-sycl.sh
-./docker-build-gpu-vulkan.sh
+
+# unused, save the time and space
+# ./docker-build-gpu-vulkan.sh

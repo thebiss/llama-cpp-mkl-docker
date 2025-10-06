@@ -2,13 +2,13 @@
 ## Build a llama.cpp instance that uses VULKAN "GPU acceleration"
 ##
 
-ARG UBUNTU_VERSION=jammy
+ARG UBUNTU_VERSION=24.04
+ARG ALPINE_VERSION=v2.49.1
 
 ##
 ## Fetch stage
 ##
-FROM alpine:latest as SOURCE
-RUN apk add --no-cache git
+FROM alpine/git:${ALPINE_VERSION} as SOURCE
 
 ARG LLAMA_CPP_VERSION_TAG
 ENV LLAMA_CPP_VERSION=${LLAMA_CPP_VERSION_TAG}
@@ -96,9 +96,10 @@ RUN cmake --build build -j $(nproc) \
 WORKDIR /home/llamauser
 COPY --chown=llamauser:llamauser ./src/* ./
 
+ENV MODEL_DIR="/var/models"
+
 ## Run phase
 ENV LLAMA_PATH="/home/llamauser/git/build/bin"
-ENV LLAMA_ARG_N_GPU_LAYERS="33"
 
 ARG LLAMA_CPP_VERSION_TAG
 ENV LLAMA_CPP_VERSION=${LLAMA_CPP_VERSION_TAG}
@@ -108,7 +109,7 @@ ENV LLAMA_BUILDER="Vulkan"
 
 # mount models externally
 
-VOLUME [ "/var/models" ]
+VOLUME [ "${MODEL_DIR}" ]
 EXPOSE 8080
 
 # Run the command in a login shell

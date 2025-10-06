@@ -15,6 +15,9 @@ source test-settings.sh
 
 # 7 Nov -remove extraneous mounts and vars
 
+# Needs DRI per https://github.com/intel/oneapi-containers
+# sudo modprobe vgem
+
 # Run the container
 DOCKER_RUN_ARGS="\
     --device=/dev/dxg \

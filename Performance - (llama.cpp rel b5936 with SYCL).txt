@@ -1,0 +1,117 @@
+(llama.cpp rel b5936 with SYCL)
+llamauser@c90c79145aca:~$ llama-bench --threads 8 -m /var/models/granite-3.3-8b-instruct-Q6_K.gguf -ngl 0
+load_backend: loaded SYCL backend from /home/llamauser/git/build/bin/libggml-sycl.so
+load_backend: loaded CPU backend from /home/llamauser/git/build/bin/libggml-cpu-icelake.so
+| model                          |       size |     params | backend    | ngl | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------: | --------------: | -------------------: |
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | SYCL       |   0 |       8 |           pp512 |         37.42 ± 4.10 |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | SYCL       |   0 |       8 |           tg128 |          4.46 ± 0.41 |
+
+build: 9fb1042 (1)
+
+./test-cpu.sh
+~/dev/llama.cpp ~/dev/llama.cpp/test
+2025-07-19T19:12:44+00:00 IBM-PF2RW5PM test-cpu.sh      INFO: Using model granite-3.3-8b-instruct-Q6_K.gguf from /home/bbissell/models/ibm/granite-3.3
+                       _ _            _____  _____        ___  _           _           _                   _
+  __ _ _ __ __ _ _ __ (_) |_ ___     |___ / |___ /       ( _ )| |__       (_)_ __  ___| |_ _ __ _   _  ___| |_
+ / _` | '__/ _` | '_ \| | __/ _ \_____ |_ \   |_ \ _____ / _ \| '_ \ _____| | '_ \/ __| __| '__| | | |/ __| __|____
+| (_| | | | (_| | | | | | ||  __/_____|__) | ___) |_____| (_) | |_) |_____| | | | \__ \ |_| |  | |_| | (__| ||_____|
+ \__, |_|  \__,_|_| |_|_|\__\___|    |____(_)____/       \___/|_.__/      |_|_| |_|___/\__|_|   \__,_|\___|\__|
+ |___/
+  ___   __      _  __                    __
+ / _ \ / /_    | |/ /  __ _  __ _ _   _ / _|
+| | | | '_ \   | ' /  / _` |/ _` | | | | |_
+| |_| | (_) |  | . \ | (_| | (_| | |_| |  _|
+ \__\_\\___/___|_|\_(_)__, |\__, |\__,_|_|
+          |_____|     |___/ |___/
+2025-07-19T19:12:44+00:00 IBM-PF2RW5PM test-cpu.sh      INFO: Passing environment via /tmp/tmp.llamaserver.3IvRm.env.
+++ docker run -it --rm --replace --volume /home/bbissell/models/ibm/granite-3.3:/var/models:ro --volume /home/bbissell/.cache/llama.cpp:/home/llamauser/.cache/llama.cpp:rw,idmap --env-file /tmp/tmp.llamaserver.3IvRm.env --publish 8080:8080 --name llama-cpp-pod localhost/thebiss/llama-cpp-mkl:latest /bin/bash
+Emulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+
+(llama.cpp rel b5936 with Intel OneMKL)
+llamauser@36d05361c9e1:~$ llama-bench --threads 8 -m /var/models/granite-3.3-8b-instruct-Q6_K.gguf -ngl 0
+| model                          |       size |     params | backend    | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | --------------: | -------------------: |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | BLAS       |       8 |           pp512 |         10.48 ± 0.63 |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | BLAS       |       8 |           tg128 |          4.43 ± 0.57 |
+
+build: 9fb1042 (1)
+
+
+## Sycl
+slot print_timing: id  0 | task 0 |
+prompt eval time =   10134.11 ms /   110 tokens (   92.13 ms per token,    10.85 tokens per second)
+       eval time =   20542.81 ms /   109 tokens (  188.47 ms per token,     5.31 tokens per second)
+      total time =   30676.93 ms /   219 tokens
+srv  log_server_r: request: POST /v1/chat/completions 10.0.2.100 200
+srv  update_slots: all slots are idle
+^Csrv    operator(): operator(): cleaning up before exit...
+++ set +x
+removed '/tmp/tmp.llamaserver.EnwHj.env'
+
+## Plain
+slot print_timing: id  0 | task 0 |
+prompt eval time =   10245.11 ms /   110 tokens (   93.14 ms per token,    10.74 tokens per second)
+       eval time =   23016.84 ms /   117 tokens (  196.73 ms per token,     5.08 tokens per second)
+      total time =   33261.96 ms /   227 tokens
+srv  update_slots: all slots are idle
+srv  log_server_r: request: POST /v1/chat/completions 10.0.2.100 200
+
+
+
+=============
+(llama.cpp rel b5936 with SYCL)
+llamauser@46222818fe69:~$ ./llama-bench-defaults.sh
+Additional parameters from $LLAMA_BENCH_OPTS: --threads 8 --n-gpu-layers 0
++ llama-bench --threads 8 --n-gpu-layers 0 -m /var/models/granite-3.3-8b-instruct-Q6_K.gguf
+load_backend: loaded SYCL backend from /home/llamauser/git/build/bin/libggml-sycl.so
+load_backend: loaded CPU backend from /home/llamauser/git/build/bin/libggml-cpu-icelake.so
+| model                          |       size |     params | backend    | ngl | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------: | --------------: | -------------------: |
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | SYCL       |   0 |       8 |           pp512 |         38.03 ± 4.35 |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | SYCL       |   0 |       8 |           tg128 |          4.22 ± 0.93 |
+
+build: 9fb1042 (1)
+
+(llama.cpp rel b5936 with SYCL)
+llamauser@60dab1c63cd0:~$ ./llama-bench-defaults.sh
+Additional parameters from $LLAMA_BENCH_OPTS: --threads 8 --n-gpu-layers 0
++ llama-bench --threads 8 --n-gpu-layers 0 -m /var/models/granite-3.3-8b-instruct-Q6_K.gguf
+load_backend: loaded SYCL backend from /home/llamauser/git/build/bin/libggml-sycl.so
+load_backend: loaded CPU backend from /home/llamauser/git/build/bin/libggml-cpu-icelake.so
+| model                          |       size |     params | backend    | ngl | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------: | --------------: | -------------------: |
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+get_memory_info: [warning] ext_intel_free_memory is not supported (export/set ZES_ENABLE_SYSMAN=1 to support), use total memory as free memory
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | SYCL       |   0 |       8 |           pp512 |         34.84 ± 4.26 |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | SYCL       |   0 |       8 |           tg128 |          4.77 ± 0.24 |
+
+build: 9fb1042 (1)
+
+
+(llama.cpp rel b5936 with Intel OneMKL)
+llamauser@ebfc59921a96:~$ ./llama-bench-defaults.sh
+Additional parameters from $LLAMA_BENCH_OPTS: --threads 8 --n-gpu-layers 0
++ llama-bench --threads 8 --n-gpu-layers 0 -m /var/models/granite-3.3-8b-instruct-Q6_K.gguf
+| model                          |       size |     params | backend    | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | --------------: | -------------------: |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | BLAS       |       8 |           pp512 |         10.57 ± 0.56 |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | BLAS       |       8 |           tg128 |          2.82 ± 1.03 |
+
+build: 9fb1042 (1)
+
+(llama.cpp rel b5936 with Intel OneMKL)
+llamauser@ebfc59921a96:~$ ./llama-bench-defaults.sh
+Additional parameters from $LLAMA_BENCH_OPTS: --threads 8 --n-gpu-layers 0
++ llama-bench --threads 8 --n-gpu-layers 0 -m /var/models/granite-3.3-8b-instruct-Q6_K.gguf
+| model                          |       size |     params | backend    | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | --------------: | -------------------: |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | BLAS       |       8 |           pp512 |         11.18 ± 0.50 |
+| granite 3B Q6_K                |   6.24 GiB |     8.17 B | BLAS       |       8 |           tg128 |          4.97 ± 0.55 |
+
+build: 9fb1042 (1)
+

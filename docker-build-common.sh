@@ -10,7 +10,7 @@
 set -euo pipefail
 
 # Import misc bash tools
-source ./docker/src/stdbash.sh
+source lib/libbbash.sh
 
 # Expectations
 [ -z "${DOCKERFILE:-}" ]    && stdbash::error "DOCKERFILE variable must contain the name dockerfile definition to build from"
